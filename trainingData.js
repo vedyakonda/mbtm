@@ -3,6 +3,7 @@
  let datalines = {x:[],y:[],z:[]};
  let chartTime;
  let classes = {};
+ let ready2train = false;
 
  function trainDiv(){
   let divContent = '<button onclick="newClass()"> ➕ new class</button>';
@@ -183,6 +184,25 @@ function storeData (thisclass, thisdata, base64Image, sampleId){
     let target = {class: thisclass};
 
     classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
+
+    if (!ready2train){
+        let modelClasses =  Object.keys(classes);
+        let readyArr = [];
+        if (modelClasses.length >= 2){
+            for (let i = 0; i < modelClasses.length; i++){
+                let elementKeys = Object.keys(classes[modelClasses[i]]);
+                readyArr.push(elementKeys.length);
+            }
+            let allGreaterThanThree = readyArr.every(function(element) {
+                return element > 3;
+            });
+
+            if (allGreaterThanThree){
+                ready2train = true;
+                document.getElementById("trainButtonDiv").innerHTML = '<button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>';
+            }
+        }
+    }
 }
 
 function calculatePeaks(array) {

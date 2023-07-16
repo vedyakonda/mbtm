@@ -6,7 +6,7 @@ function trainingData(){
 }
 
 function setNeuralNetwork() {
-    let dataSet = dummy;
+    let dataSet = classes;
     let modelClasses =  Object.keys(dataSet);
     thisModelClasses = modelClasses;
     console.log ("model classes are: " + modelClasses);
@@ -48,11 +48,14 @@ function setNeuralNetwork() {
     }
 
     thisModel.train(trainingOptions, finishedTraining);
-    document.getElementById("trainButton").innerHTML =  "💪🏾💪🏽 training... 💪🏾💪🏽";
+    document.getElementById("trainButtonDiv").innerHTML =  "💪🏾💪🏽 training... 💪🏾💪🏽";
 
 }
 
 function finishedTraining(){
-    document.getElementById("trainButton").innerHTML =  '<button id="trainButton" onClick="setNeuralNetwork()">Retrain Model</button>';
+    document.getElementById('trainButtonDiv').innerHTML =  '<button id="trainButton" onClick="setNeuralNetwork()">Retrain Model</button>';
     console.log("model trained");
+
+    document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestButton" onClick="liveTest()">Live Test</button>';
+    document.getElementById('useButtonDiv').innerHTML ='<button id="LiveTestButton" onClick="useModel()">Use model to send data to microBit</button>';
 }

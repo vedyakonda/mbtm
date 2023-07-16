@@ -5,13 +5,17 @@ let dataStream = false, resultChart = false, testChart, cux, mode;
 function useModel(){
     mode = 'use';
     getRawData();
-    dataStream = true; 
+    dataStream = true;
+    document.getElementById("useButtonDiv").innerHTML = '<button id="LiveTestOffButton" onClick="dataStreamOff()">Stop sending data</button>';
+    document.getElementById("useChart").innerHTML = '<canvas id="useConfidence"></canvas>';
 }
 
 function liveTest() {
     mode = 'test';
     getRawData();
     dataStream = true;
+    document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestOffButton" onClick="dataStreamOff()">Stop Testing</button>';
+    document.getElementById("testChart").innerHTML = '<canvas id="confidence"></canvas>';
 }
 
 function dataStreamOff() {
@@ -20,6 +24,13 @@ function dataStreamOff() {
     rawTestData = {x:[],y:[],z:[]};
     cux = null;
     testChart = null;
+    if (mode = 'test'){
+        document.getElementById("testChart").innerHTML = '';
+        document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestButton" onClick="liveTest()">Live Test</button>';
+    } else if (mode = 'use'){
+        document.getElementById("useChart").innerHTML = '';
+        document.getElementById('useButtonDiv').innerHTML ='<button id="LiveTestButton" onClick="useModel()">Use model to send data to microBit</button>';
+    }
 }
 
 function getRawData() {
