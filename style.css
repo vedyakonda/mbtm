@@ -1,0 +1,13 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+.chart-wrapper {
+  display: inline-block;
+  position: relative;
+  height: 200px;
+  width: 50%;
+}
