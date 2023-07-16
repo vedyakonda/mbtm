@@ -5,9 +5,13 @@
   <title>MBTM</title>
 
   <script language="javascript" type="text/javascript" src="webble.js"></script>
+  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="text/javascript" src="sketch.js"></script>
+  <script src="https://unpkg.com/mathjs@11.8.2/lib/browser/math.js"></script>
+  <script type="text/javascript" src="trainingData.js"></script>
+  <script type="text/javascript" src="model.js"></script>
+  <script type="text/javascript" src="dummy.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -33,6 +37,7 @@
   <div id="imageContainer">
   </div>
   <h1>🏋🏾 Train your model</h1>
+  <button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>
   <h1>🧪 Test your model</h1>
   <h1>😎 Use your model</h1>
 </body>

@@ -44,7 +44,7 @@
   document.getElementById(thisclass+'recordDiv').innerHTML = "🔴 recording";
   document.getElementById(thisclass+'chart-wrapper').innerHTML = '<canvas id="'+thisclass+'Canvas"></canvas>';
   ctx = document.getElementById(thisclass+'Canvas').getContext('2d');
-  let chrlabels = new Array(81);
+  let chrlabels = new Array(41);
   chrlabels.fill("");
   datalines.x.push(acc.x/1024);
   datalines.y.push(acc.y/1024);
@@ -84,6 +84,10 @@
         animation: {
           duration: 0
         },
+        interaction: {
+          mode: 'none',  // Disable all interactions
+          intersect: false  // Disable data point hover intersections
+        },
         tooltips: {enabled: false},
         hover: {mode: null},
         responsive: true,
@@ -119,7 +123,7 @@ function updateData(thisclass) {
 
 function callUpdate(thisclass){
   setTimeout(function() {
-    if (chartTime > 4000){
+    if (chartTime > 2000){
       stopChart(thisclass);
     } else {
       chartTime = chartTime+50;
@@ -141,17 +145,56 @@ function stopChart(thisclass){
   document.getElementById(thisclass+'recordDiv').innerHTML = '<button id="'+thisclass+'recordButton" onClick="record('+rec+')">➕ new data</button>';
   document.getElementById(thisclass+'chart-wrapper').classList.remove('chart-wrapper');
   if (Object.keys(classes[thisclass]).length === 0){
-    classes[thisclass]['el'+1] = {data: thisdata, image: base64Image};
+    let sampleId = 'el'+1; 
+    storeData(thisclass, thisdata, base64Image, sampleId);
   } else{
     let keys = Object.keys(classes[thisclass]);
     let lastKey = keys[keys.length - 1];
     let newKey = parseInt(lastKey.replace(/^el/, '')) + 1;
-    classes[thisclass]['el' + newKey] = {data: thisdata, image: base64Image};
+    let sampleId = 'el' + newKey; 
+    storeData(thisclass, thisdata, base64Image, sampleId);
   }
   //classes[thisclass][] = {data:'', image: base64Image};
   showChartImage(base64Image, thisclass);
 
 }
+
+function storeData (thisclass, thisdata, base64Image, sampleId){
+    let inputs = {
+        xPeaks: calculatePeaks(thisdata.x),
+        xMax: Math.max(...thisdata.x),
+        xMin: Math.min(...thisdata.x),
+        xStd: math.std(thisdata.x),
+        yPeaks: calculatePeaks(thisdata.y),
+        yMax: Math.max(...thisdata.y),
+        aMin: Math.min(...thisdata.y),
+        aStd: math.std(thisdata.y),
+        zPeaks: calculatePeaks(thisdata.z),
+        zMax: Math.max(...thisdata.z),
+        zMin: Math.min(...thisdata.z),
+        zStd: math.std(thisdata.z),
+    };
+    let target = {class: thisclass};
+
+    classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
+}
+
+function calculatePeaks(array) {
+    var peaks = [];
+  
+    for (var i = 1; i < array.length - 1; i++) {
+      var currentValue = array[i];
+      var prevValue = array[i - 1];
+      var nextValue = array[i + 1];
+  
+      if (currentValue > prevValue && currentValue > nextValue) {
+        peaks.push(currentValue);
+      }
+    }
+    //return the number of peaks 
+    return peaks.length;
+}
+  
 
 function showChartImage(b64, thisclass){
   var img = document.createElement('img');
