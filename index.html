@@ -11,6 +11,7 @@
   <script src="https://unpkg.com/mathjs@11.8.2/lib/browser/math.js"></script>
   <script type="text/javascript" src="trainingData.js"></script>
   <script type="text/javascript" src="model.js"></script>
+  <script type="text/javascript" src="test.js"></script>
   <script type="text/javascript" src="dummy.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -32,14 +33,18 @@
   </div>
   <div id="myClasses">
   </div>
-  <div id="record">
-  </div>
-  <div id="imageContainer">
-  </div>
   <h1>🏋🏾 Train your model</h1>
-  <button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>
+  <div id="trainButton"><button id="trainButton" onClick="setNeuralNetwork()">Train Model</button></div>
   <h1>🧪 Test your model</h1>
+  <div id="testButton"><button id="LiveTestButton" onClick="liveTest()">Live Test</button></div>
+  <div id="testOffButton"><button id="LiveTestOffButton" onClick="dataStreamOff()">Live Test Off</button></div>
+  <div id = "testChart" class="chart-wrapper"><canvas id="confidence"></canvas></div>
   <h1>😎 Use your model</h1>
+  <div id="testButton"><button id="LiveTestButton" onClick="useModel()">Live Test</button></div>
+  <div id="testOffButton"><button id="LiveTestOffButton" onClick="dataStreamOff()">Live Test Off</button></div>
+  <div id = "useChart" class="chart-wrapper"><canvas id="useConfidence"></canvas></div>
+  <input type="range" id="slider" min="0" max="100" value="50" />
+  <span id="sliderValue"></span>
 </body>
 
 </html>

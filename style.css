@@ -11,3 +11,7 @@ canvas {
   height: 200px;
   width: 50%;
 }
+#tfjs-visor-container{
+  display: none;
+  visibility: hidden;
+}

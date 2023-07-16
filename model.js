@@ -1,4 +1,5 @@
 let thisModel;
+let thisModelClasses;
 
 function trainingData(){
     
@@ -7,6 +8,7 @@ function trainingData(){
 function setNeuralNetwork() {
     let dataSet = dummy;
     let modelClasses =  Object.keys(dataSet);
+    thisModelClasses = modelClasses;
     console.log ("model classes are: " + modelClasses);
     let options = {
       inputs: [
@@ -42,37 +44,15 @@ function setNeuralNetwork() {
 
     thisModel.normalizeData();
     const trainingOptions = {
-        epochs: 1000
+        epochs: 500
     }
 
     thisModel.train(trainingOptions, finishedTraining);
+    document.getElementById("trainButton").innerHTML =  "💪🏾💪🏽 training... 💪🏾💪🏽";
 
 }
 
 function finishedTraining(){
+    document.getElementById("trainButton").innerHTML =  '<button id="trainButton" onClick="setNeuralNetwork()">Retrain Model</button>';
     console.log("model trained");
-    let input = {
-        "xPeaks": 10,
-        "xMax": -0.4453125,
-        "xMin": -0.46875,
-        "xStd": 0.00572606219011202,
-        "yPeaks": 9,
-        "yMax": 0.1171875,
-        "aMin": 0.09765625,
-        "aStd": 0.004166716288449438,
-        "zPeaks": 12,
-        "zMax": 0.875,
-        "zMin": 0.84765625,
-        "zStd": 0.006251190816434546
-    };
-    thisModel.classify(input, gotResult);
-}
-
-function gotResult(error, results) {
-    if (error) {
-        console.error(error);
-        return;
-    }
-
-    console.log(results);
 }

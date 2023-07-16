@@ -1,4 +1,4 @@
- let ctx, trainDivy = false; mbconnected = false;
+ let acc, ctx, trainDivy = false; mbconnected = false;
  let myChart;
  let datalines = {x:[],y:[],z:[]};
  let chartTime;
@@ -159,7 +159,8 @@ function stopChart(thisclass){
 
 }
 
-function storeData (thisclass, thisdata, base64Image, sampleId){
+
+function getFeatures (thisdata){
     let inputs = {
         xPeaks: calculatePeaks(thisdata.x),
         xMax: Math.max(...thisdata.x),
@@ -174,6 +175,11 @@ function storeData (thisclass, thisdata, base64Image, sampleId){
         zMin: Math.min(...thisdata.z),
         zStd: math.std(thisdata.z),
     };
+    return inputs;
+}
+
+function storeData (thisclass, thisdata, base64Image, sampleId){
+    let inputs = getFeatures(thisdata);
     let target = {class: thisclass};
 
     classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
