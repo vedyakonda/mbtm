@@ -1,6 +1,7 @@
 let rawTestData = {x:[],y:[],z:[]};
 let dataStream = false, resultTestChart = false, resultUseChart = false, testChart, useChart, cux, cvx, modeUse = false, modeTest = false;
 //let confidenceData = {};
+let prevLabel = "";
 
 function useModel(){
     getRawData();
@@ -248,6 +249,10 @@ function createUseChart(results){
 }
 
 function sendtoMB(label){
-    microBit.writeUARTData(label);    
+    if (prevLabel!=label) {
+        prevLabel=label;
+        microBit.writeUARTData(prevLabel);    
+        // console.log(prevLabel);
+    }
 }
 
