@@ -4,7 +4,7 @@
  let chartTime;
  let classes = {};
  let ready2train = false;
- let count = 0;
+ let count = 1;
 
  function trainDiv(){
   let divContent = '<button onclick="newClass()"> ➕ new class</button>';
