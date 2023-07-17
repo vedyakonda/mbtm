@@ -168,7 +168,7 @@ function sendtoMB(label){
     if (prevLabel!=label) {
         prevLabel=label;
         microBit.writeUARTData(prevLabel);    
-        console.log(prevLabel);
+        // console.log(prevLabel);
     }
 }
 
