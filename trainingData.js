@@ -4,6 +4,7 @@
  let chartTime;
  let classes = {};
  let ready2train = false;
+ let count = 0;
 
  function trainDiv(){
   let divContent = '<button onclick="newClass()"> ➕ new class</button>';
@@ -14,12 +15,13 @@
 
 
  function nameClass(){
-  let className = prompt("Please enter a name for your new class:", "Class 1");
+  count++;
+  let className = prompt("Please enter a name for your new class (no spaces):", "Class" + count);
   let thisClassMod = className.replace(/\s/g, '');
   if (classes[thisClassMod]){
     return "errorClassName";   
   } else {
-    return className;
+    return thisClassMod;
   }
  }
 
