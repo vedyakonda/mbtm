@@ -7,6 +7,7 @@ function trainingData(){
 
 function setNeuralNetwork() {
     collapseAllData();
+    //let dataSet = dummy; //<button  onClick="setNeuralNetwork()"> OVERIDE TRAIN</button> 
     let dataSet = classes;
     let modelClasses =  Object.keys(dataSet);
     thisModelClasses = modelClasses;
@@ -58,5 +59,8 @@ function finishedTraining(){
     console.log("model trained");
 
     document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestButton" onClick="liveTest()">Live Test</button>';
-    document.getElementById('useButtonDiv').innerHTML ='<button id="LiveTestButton" onClick="useModel()">Use model to send data to microBit</button>';
+    document.getElementById('useButtonDiv').innerHTML ='<button id="LiveUseButton" onClick="useModel()">Use model to send data to microBit</button>';
+    openTestMdl();
+    openUseMdl();
+    collapseTrainMdl();
 }

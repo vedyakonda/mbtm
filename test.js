@@ -6,7 +6,7 @@ function useModel(){
     mode = 'use';
     getRawData();
     dataStream = true;
-    document.getElementById("useButtonDiv").innerHTML = '<button id="LiveTestOffButton" onClick="dataStreamOff()">Stop sending data</button>';
+    document.getElementById("useButtonDiv").innerHTML = '<button id="LiveUseOffButton" onClick="dataStreamOff()">Stop sending data</button>';
     document.getElementById("useChart").innerHTML = '<canvas id="useConfidence"></canvas>';
     document.getElementById("useChart").classList.add('chart-wrapper');
 }
@@ -25,15 +25,16 @@ function dataStreamOff() {
     dataStream = false;
     rawTestData = {x:[],y:[],z:[]};
     cux = null;
+    resultChart = false;
     testChart = null;
-    if (mode = 'test'){
+    if (mode == 'test'){
         document.getElementById("testChart").innerHTML = '';
         document.getElementById("testChart").classList.remove('chart-wrapper');
         document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestButton" onClick="liveTest()">Live Test</button>';
-    } else if (mode = 'use'){
+    } else if (mode == 'use'){
         document.getElementById("useChart").innerHTML = '';
         document.getElementById("useChart").classList.remove('chart-wrapper');
-        document.getElementById('useButtonDiv').innerHTML ='<button id="LiveTestButton" onClick="useModel()">Use model to send data to microBit</button>';
+        document.getElementById('useButtonDiv').innerHTML ='<button id="LiveUseButton" onClick="useModel()">Use model to send data to microBit</button>';
     }
 }
 
@@ -71,6 +72,7 @@ function gotResult(error, results) {
 
         if (!resultChart){
             createChart(results);
+
         } else {
             updateChart(results);
         }
@@ -81,21 +83,23 @@ function gotResult(error, results) {
 function updateChart(results){
     //console.log(results[0].label);
     let dta = [];
-    for (let j = 0; j < thisModelClasses.length; j++){
-        for (let i = 0; i < results.length; i++){
-            if (thisModelClasses[j] == results[i].label){
-                let val = results[i].confidence
-                val = Math.round(val*100);
-                dta.push(val);
+    if (testChart != null){
+        for (let j = 0; j < thisModelClasses.length; j++){
+            for (let i = 0; i < results.length; i++){
+                if (thisModelClasses[j] == results[i].label){
+                    let val = results[i].confidence
+                    val = Math.round(val*100);
+                    dta.push(val);
+                }
             }
         }
-    }
-    testChart.data.datasets[0].data = dta;
-    //console.log(testChart.data.datasets.data);
-    testChart.update();
+        testChart.data.datasets[0].data = dta;
+        //console.log(testChart.data.datasets.data);
+        testChart.update();
 
-    if (mode == 'use'){
-        sendtoMB(results[0].label);
+        if (mode == 'use'){
+            sendtoMB(results[0].label);
+        }
     }
 
 }
@@ -104,7 +108,7 @@ function updateChart(results){
 function createChart(results){
     //console.log(results);
     if (mode == 'test'){
-        cux = document.getElementById('confidence').getContext('2d');
+    cux = document.getElementById('confidence').getContext('2d');
     } else if (mode == 'use'){
         cux = document.getElementById('useConfidence').getContext('2d');
     }
