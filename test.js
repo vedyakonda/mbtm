@@ -8,6 +8,7 @@ function useModel(){
     dataStream = true;
     document.getElementById("useButtonDiv").innerHTML = '<button id="LiveTestOffButton" onClick="dataStreamOff()">Stop sending data</button>';
     document.getElementById("useChart").innerHTML = '<canvas id="useConfidence"></canvas>';
+    document.getElementById("useChart").classList.add('chart-wrapper');
 }
 
 function liveTest() {
@@ -16,6 +17,7 @@ function liveTest() {
     dataStream = true;
     document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestOffButton" onClick="dataStreamOff()">Stop Testing</button>';
     document.getElementById("testChart").innerHTML = '<canvas id="confidence"></canvas>';
+    document.getElementById("testChart").classList.add('chart-wrapper');
 }
 
 function dataStreamOff() {
@@ -26,9 +28,11 @@ function dataStreamOff() {
     testChart = null;
     if (mode = 'test'){
         document.getElementById("testChart").innerHTML = '';
+        document.getElementById("testChart").classList.remove('chart-wrapper');
         document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestButton" onClick="liveTest()">Live Test</button>';
     } else if (mode = 'use'){
         document.getElementById("useChart").innerHTML = '';
+        document.getElementById("useChart").classList.remove('chart-wrapper');
         document.getElementById('useButtonDiv').innerHTML ='<button id="LiveTestButton" onClick="useModel()">Use model to send data to microBit</button>';
     }
 }

@@ -7,11 +7,9 @@
 
  function trainDiv(){
   let divContent = '<button onclick="newClass()"> ➕ new class</button>';
+  openAllData();
   document.getElementById("addClass").innerHTML = divContent;
   trainDivy = true;
-  /*let divContent = '<button id="recordButton" onClick="record()">record</button><div id="chart-wrapper"><canvas id="myChart"></canvas></div>'
-  document.getElementById("record").innerHTML =  divContent;
-  recordDivy = true;*/
  }
 
 
@@ -35,7 +33,7 @@
     let node = document.createElement("div");
     node.id = thisClassMod;
     let rec = "'"+thisClassMod+"'";
-    node.innerHTML = '<h2>'+thisClass+'</h2><div id = "'+thisClassMod+'recordDiv"><button id="'+thisClassMod+'recordButton" onClick="record('+rec+')">➕ new data</button></div><div id="'+thisClassMod+'chart-wrapper"></div><div id="'+thisClassMod+'Data"></div>';
+    node.innerHTML = '<h3>'+thisClass+'</h3><div id = "'+thisClassMod+'recordDiv"><button id="'+thisClassMod+'recordButton" onClick="record('+rec+')">➕ new data</button></div><div id="'+thisClassMod+'chart-wrapper"></div><div id="'+thisClassMod+'Data"></div>';
     document.getElementById("myClasses").appendChild(node)
   } 
  }
@@ -199,6 +197,7 @@ function storeData (thisclass, thisdata, base64Image, sampleId){
 
             if (allGreaterThanThree){
                 ready2train = true;
+                openTrainMdl();
                 document.getElementById("trainButtonDiv").innerHTML = '<button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>';
             }
         }
@@ -225,7 +224,7 @@ function calculatePeaks(array) {
 function showChartImage(b64, thisclass){
   var img = document.createElement('img');
   img.src = b64;
-  img.style.height=200;
+  img.style.height=125;
   var imageContainer = document.getElementById(thisclass+'Data');
   //imageContainer.innerHTML = '';
   imageContainer.appendChild(img);
@@ -258,6 +257,7 @@ function showChartImage(b64, thisclass){
   if (!mbconnected){
     document.getElementById("connectMicro").innerHTML =  "Your microBit is connected!";
     mbconnected = true;
+    collapseConnect();
   }
   acc = microBit.getAccelerometer();
    //console.log(acc);

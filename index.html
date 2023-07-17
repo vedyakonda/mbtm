@@ -13,6 +13,7 @@
   <script type="text/javascript" src="model.js"></script>
   <script type="text/javascript" src="test.js"></script>
   <script type="text/javascript" src="dummy.js"></script>
+  <script type="text/javascript" src="style.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -24,23 +25,76 @@
 </style>
 
 <body>
-  <h1>🔌 Connect your microBit</h1>
-    <div id="connectMicro">
-      <button id="searchButton" onClick="searchDevice()">👀 Find your microBit</button>
+  <div class="container"><h1 class="center-element">mbtm</h1></div>
+  <div id="connect" class="corners">
+    <div class="titleCont">
+
+    <h2>🔌 Connect your microBit
+      <div id="connectCO" class="icon">
+        <a href="javascript:collapseConnect();">❎</a>
+      </div>
+    </h2>
     </div>
-  <h1>📈 Add your training data</h1>
-  <div id="addClass">
+    <div id = "connectContent" class="showContent">
+      <div id="connectMicro">
+        <p>Prior to connecting your microBit make sure that you have uploaded the 
+          <a href="https://makecode.microbit.org/S71607-73287-77208-18837" target="_blank">
+          sample code</a>
+          to the microcontroller.
+          Once you upload the code press on the button below to connect!  
+        </p>
+        <button id="searchButton" onClick="searchDevice()"> Pair your microBit</button>
+      </div>
+    </div>
   </div>
-  <div id="myClasses">
+
+  <div id="addData" class="corners">
+    <h2>📈 Add your training data
+      <div id="allDataCO" class="icon">
+        <a href="javascript:openAllData();">🔽</a>
+      </div>
+    </h2>
+    <div id="allDataContent" class="hideContent">
+      <div id="addClass">To add training data connect your microBit first!</div>
+      <div id="myClasses"></div>
+    </div>
   </div>
-  <h1>🏋🏾 Train your model</h1>
-  <div id="trainButtonDiv"></div>
-  <h1>🧪 Test your model</h1>
-  <div id="testModelButtonDiv"></div>
-  <div id = "testChart" class="chart-wrapper"></div>
-  <h1>😎 Use your model</h1>
-  <div id="useButtonDiv"></div>
-  <div id = "useChart" class="chart-wrapper"></div>
+
+  <div id="trainMdl" class="corners">
+    <h2>🏋🏾 Train your model
+      <div id="trainMdlCO" class="icon">
+        <a href="javascript:openTrainMdl();">🔽</a>
+      </div>
+    </h2>
+    <div id="trainMdlContent" class="hideContent">
+      <div id="trainButtonDiv">To train your model you must add more training data to have at least 2 classes with 4 data samples each.</div>
+    </div>
+  </div>
+
+
+  <div id="testMdl" class="corners">
+    <h2>🧪 Test your model
+      <div id="testMdlCO" class="icon">
+        <a href="javascript:openTestMdl();">🔽</a>
+      </div>
+    </h2>
+    <div id="testMdlContent" class="hideContent">
+      <div id="testModelButtonDiv">Add training data and train a model first!</div>
+      <div id = "testChart" ></div>
+    </div> 
+  </div>
+
+  <div id="useMdl" class="corners">
+    <h2>😎 Use your model
+      <div id="useMdlCO" class="icon">
+        <a href="javascript:openUseMdl();">🔽</a>
+      </div>
+    </h2>
+    <div id="useMdlContent" class="hideContent">
+      <div id="useButtonDiv">Add training data and train a model first!</div>
+      <div id = "useChart" ></div>
+    </div>
+  </div>
 </body>
 
 </html>

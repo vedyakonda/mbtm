@@ -1,6 +1,13 @@
 html, body {
   margin: 0;
   padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: rgb(226, 251, 199);
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 canvas {
   display: block;
@@ -11,7 +18,53 @@ canvas {
   height: 200px;
   width: 50%;
 }
+.corners {
+  border-radius: 25px;
+  border: 2px solid #73AD21;
+  padding: 10px; 
+  margin-left: 20;
+  margin-top: 0;
+  margin-bottom: 15;
+  margin-right: 20; 
+  background-color: rgb(255, 255, 255);
+}
+.hideContent{
+  display: none;
+  visibility: hidden;
+}
+.showContent{
+  visibility: visible;
+  margin-top: 5;
+  margin-left: 5;
+}
+.titleCont{
+  white-space: nowrap; /* Prevent line break */
+}
+
+.icon {
+  display: inline-block;
+  position: absolute;
+  right: 40;
+}
 #tfjs-visor-container{
   display: none;
   visibility: hidden;
 }
+.center-element {
+  /* Optional: Adjust the width and height properties */
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+a:link { text-decoration: none; }
+
+
+a:visited { text-decoration: none; }
+
+
+a:hover { text-decoration: none; }
+
+
+a:active { text-decoration: none; }

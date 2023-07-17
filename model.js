@@ -6,6 +6,7 @@ function trainingData(){
 }
 
 function setNeuralNetwork() {
+    collapseAllData();
     let dataSet = classes;
     let modelClasses =  Object.keys(dataSet);
     thisModelClasses = modelClasses;
