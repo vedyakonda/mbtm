@@ -15,7 +15,6 @@
 
 
  function nameClass(){
-  count++;
   let className = prompt("Please enter a name for your new class (no spaces):", "Class" + count);
   let thisClassMod = className.replace(/\s/g, '');
   if (classes[thisClassMod]){
@@ -37,6 +36,7 @@
     let rec = "'"+thisClassMod+"'";
     node.innerHTML = '<h3>'+thisClass+'</h3><div id = "'+thisClassMod+'recordDiv"><button id="'+thisClassMod+'recordButton" onClick="record('+rec+')">➕ new data</button></div><div id="'+thisClassMod+'chart-wrapper"></div><div id="'+thisClassMod+'Data"></div>';
     document.getElementById("myClasses").appendChild(node)
+    count++;
   } 
  }
 
