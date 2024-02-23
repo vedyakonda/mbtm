@@ -46,8 +46,7 @@ function displayUp(){
    let elementKeys = Object.keys(classes[keyClasses[i]]);
    for (let j = 0; j < elementKeys.length; j++){
      let b64 = classes[keyClasses[i]][elementKeys[j]].image;
-     
-     //console.log(thisClass);
+    
      showChartImage(b64, thisClass);
    }
  }
@@ -320,33 +319,39 @@ function storeData (thisclass, thisdata, base64Image, sampleId){
 
   classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
 
-  console.log(classes);
   shouldTrain();
 }
 
 
 function shouldTrain (){
- if (!ready2train){
-   let modelClasses =  Object.keys(classes);
-   let readyArr = [];
-   if (modelClasses.length >= 2){
-       for (let i = 0; i < modelClasses.length; i++){
-           let elementKeys = Object.keys(classes[modelClasses[i]]);
-           readyArr.push(elementKeys.length);
-       }
-       let allGreaterThanThree = readyArr.every(function(element) {
-           return element > 3;
-       });
+  if (!ready2train){
+     let modelClasses =  Object.keys(classes);
+     let readyArr = [];
 
-       if (allGreaterThanThree){
-         trainDwld();
-       }else{
-         document.getElementById("trainButtonDiv").innerHTML = ''; // Remove the "Train Model" button
-           console.log('hide');
-       }
-   }
-}
-}
+     if (modelClasses.length >= 2){
+         for (let i = 0; i < modelClasses.length; i++){
+             let elementKeys = Object.keys(classes[modelClasses[i]]);
+             readyArr.push(elementKeys.length);
+         }
+         let allGreaterThanThree = readyArr.every(function(element) {
+             return element > 3;
+         });
+   
+         if (allGreaterThanThree){
+           trainDwld();
+         }else{
+           doNotTrain();
+         }
+     }else{
+      doNotTrain();
+     }
+  }
+  }
+   
+  function doNotTrain(){
+    document.getElementById("trainButtonDiv").innerHTML = ''; // Remove the "Train Model" button
+   
+  }
 
 
 function trainDwld() {
@@ -354,7 +359,6 @@ function trainDwld() {
      ready2train = true;
      openTrainMdl();
      document.getElementById("trainButtonDiv").innerHTML = '<button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>';
-     console.log('show');
 
 }
 
@@ -393,7 +397,6 @@ function deleteDataPoint(thisclass, imgId) {
  let confirmation = confirm("Are you sure you want to delete this data point?");
  if (confirmation) {
    let sampleId = imgId.replace(thisclass, '');
-   console.log(sampleId);
    delete classes[thisclass][sampleId];
    // update UI
    let dataElement = document.getElementById(imgId+'_div');
