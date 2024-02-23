@@ -36,6 +36,7 @@ function logFile (event) {
  document.getElementById("upld").classList.remove('showContent');
 }
 
+
 function displayUp(){
  document.getElementById("myClasses").innerHTML = "";
  let keyClasses =  Object.keys(classes);
@@ -153,9 +154,10 @@ function deleteClass(thisclass) {
      delete classes[thisclass];
      let classDiv = document.getElementById(thisclass);
      classDiv.parentNode.removeChild(classDiv);
-
-     trainDwld();
  }
+
+ ready2train = false;
+ shouldTrain();
 }
 
 
@@ -170,7 +172,6 @@ function record(thisclass){
  datalines.x.push(acc.x/1024);
  datalines.y.push(acc.y/1024);
  datalines.z.push(acc.z/1024);
- trainDwld();
 
  let initialData = {
    labels: chrlabels,
@@ -272,12 +273,26 @@ function stopChart(thisclass){
   document.getElementById(thisclass+'chart-wrapper').classList.remove('chart-wrapper');
  
   let keys = Object.keys(classes[thisclass]);
-  let newKey = keys.length + 1;
-  let sampleId = 'el' + newKey; 
-  imgId = thisclass + sampleId;
-  storeData(thisclass, thisdata, base64Image, sampleId);
-  showChartImage(base64Image, thisclass, imgId);
+  if (keys.length > 0) {
+    let lastKey = keys[keys.length - 1];
+    let num = lastKey.replace(/^el/, '');
+    let newNum = parseInt(num) + 1;
+    let sampleId = 'el' + newNum; 
+    imgId = thisclass + sampleId;
+    storeData(thisclass, thisdata, base64Image, sampleId);
+    showChartImage(base64Image, thisclass, imgId);
+  } else {
+    let newKey = keys.length + 1;
+    let sampleId = 'el' + newKey; 
+    imgId = thisclass + sampleId;
+    storeData(thisclass, thisdata, base64Image, sampleId);
+    showChartImage(base64Image, thisclass, imgId);
+  }
+  
  }
+
+
+ 
  
 
 
@@ -300,47 +315,47 @@ function getFeatures (thisdata){
 }
 
 function storeData (thisclass, thisdata, base64Image, sampleId){
-   let inputs = getFeatures(thisdata);
-   let target = {class: thisclass};
+  let inputs = getFeatures(thisdata);
+  let target = {class: thisclass};
 
-   classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
+  classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
 
-   if (!ready2train){
-       let modelClasses =  Object.keys(classes);
-       let readyArr = [];
-       if (modelClasses.length >= 2){
-           for (let i = 0; i < modelClasses.length; i++){
-               let elementKeys = Object.keys(classes[modelClasses[i]]);
-               readyArr.push(elementKeys.length);
-           }
-           let allGreaterThanThree = readyArr.every(function(element) {
-               return element > 3;
-           });
+  console.log(classes);
+  shouldTrain();
+}
 
-           if (allGreaterThanThree){
-             trainDwld();
-           }
+
+function shouldTrain (){
+ if (!ready2train){
+   let modelClasses =  Object.keys(classes);
+   let readyArr = [];
+   if (modelClasses.length >= 2){
+       for (let i = 0; i < modelClasses.length; i++){
+           let elementKeys = Object.keys(classes[modelClasses[i]]);
+           readyArr.push(elementKeys.length);
+       }
+       let allGreaterThanThree = readyArr.every(function(element) {
+           return element > 3;
+       });
+
+       if (allGreaterThanThree){
+         trainDwld();
+       }else{
+         document.getElementById("trainButtonDiv").innerHTML = ''; // Remove the "Train Model" button
+           console.log('hide');
        }
    }
+}
 }
 
 
 function trainDwld() {
-  let classCount = Object.keys(classes).length;
-  let classKeys = Object.keys(classes);
-  let enoughData = classKeys.filter(key => Object.keys(classes[key]).length >= 4).length >= 2;
-  console.log('main');
+     document.getElementById("dwnld").innerHTML = '<button id="dwnldButton" onClick="downloadObjectAsJson()">Download all data</button>';
+     ready2train = true;
+     openTrainMdl();
+     document.getElementById("trainButtonDiv").innerHTML = '<button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>';
+     console.log('show');
 
-  if (classCount >= 2 && enoughData) {
-      document.getElementById("dwnld").innerHTML = '<button id="dwnldButton" onClick="downloadObjectAsJson()">Download all data</button>';
-      ready2train = true;
-      openTrainMdl();
-      document.getElementById("trainButtonDiv").innerHTML = '<button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>';
-      console.log('show');
-  } else {
-      document.getElementById("trainButtonDiv").innerHTML = ''; // Remove the "Train Model" button
-      console.log('hide');
-  }
 }
 
 
@@ -384,7 +399,8 @@ function deleteDataPoint(thisclass, imgId) {
    let dataElement = document.getElementById(imgId+'_div');
    dataElement.parentNode.removeChild(dataElement);
    
-   trainDwld();
+   ready2train = false;
+   shouldTrain();
  }
 }
 
