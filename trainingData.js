@@ -2,7 +2,8 @@ let acc, ctx, trainDivy = false, testDivy = false; mbconnected = false;
 let myChart;
 let datalines = {x:[],y:[],z:[]};
 let chartTime;
-let classes = {};
+let classes = {}; //stores training data
+let testingData = {}; //stores testing data
 let ready2train = false;
 let count = 1;
 let form, file;
@@ -117,14 +118,14 @@ function createClassDiv(thisClassMod) {
  let node = document.createElement("div");
  node.id = thisClassMod;
  let rec = "'" + thisClassMod + "'";
- node.innerHTML = '<div><h3 style="display: inline-block;">' + thisClassMod + '</h3><button style="display: inline-block;" class="deleteClassButton" onclick="deleteClass(' + rec + ')">❌</button></div><div id="' + thisClassMod + 'recordDiv"><button id="' + thisClassMod + 'recordButton" onClick="record(' + rec + ',"train")">➕ new data</button></div><div id="' + thisClassMod + 'chart-wrapper"></div><div id="' + thisClassMod + 'Data"></div>';
+ node.innerHTML = '<div><h3 style="display: inline-block;">' + thisClassMod + '</h3><button style="display: inline-block;" class="deleteClassButton" onclick="deleteClass(' + rec + ')">❌</button></div><div id="' + thisClassMod + 'recordDiv"><button id="' + thisClassMod + 'recordButton" onClick="record(' + rec + ')">➕ new data</button></div><div id="' + thisClassMod + 'chart-wrapper"></div><div id="' + thisClassMod + 'Data"></div>';
  document.getElementById("myClasses").appendChild(node);
  //testing classes
  let testnode = document.createElement("div");
  let testClassMod = thisClassMod + 'Test';
  testnode.id = testClassMod;
  let testrec = "'" + testClassMod + "'";
- testnode.innerHTML = '<div><h3 style="display: inline-block;">' + testClassMod + '</h3><button style="display: inline-block;" class="deleteClassButton" onclick="deleteClass(' + testrec + ')">❌</button></div><div id="' + testClassMod + 'recordDiv"><button id="' + testClassMod + 'recordButton" onClick="record(' + testrec + ',"test")">➕ new data</button></div><div id="' + testClassMod + 'chart-wrapper"></div><div id="' + testClassMod + 'Data"></div>';
+ testnode.innerHTML = '<div><h3 style="display: inline-block;">' + testClassMod + '</h3><button style="display: inline-block;" class="deleteClassButton" onclick="deleteClass(' + testrec + ')">❌</button></div><div id="' + testClassMod + 'recordDiv"><button id="' + testClassMod + 'recordButton" onClick="record(' + testrec + ')">➕ new data</button></div><div id="' + testClassMod + 'chart-wrapper"></div><div id="' + testClassMod + 'Data"></div>';
  document.getElementById("myTestClasses").appendChild(testnode);
  count++;
 }
@@ -269,6 +270,7 @@ function callUpdate(thisclass){
  
 
 function stopChart(thisclass){
+  //stops the chart
   let base64Image = myChart.toBase64Image();
   let thisdata = datalines;
   let imgId;
@@ -280,7 +282,8 @@ function stopChart(thisclass){
   let rec = "'"+thisclass+"'";
   document.getElementById(thisclass+'recordDiv').innerHTML = '<button id="'+thisclass+'recordButton" onClick="record('+rec+')">➕ new data</button>';
   document.getElementById(thisclass+'chart-wrapper').classList.remove('chart-wrapper');
- 
+ //storing data and saving data
+ //PG: modify this
   let keys = Object.keys(classes[thisclass]);
   if (keys.length > 0) {
     let lastKey = keys[keys.length - 1];
@@ -323,6 +326,7 @@ function getFeatures (thisdata){
    return inputs;
 }
 
+//modify store data
 function storeData (thisclass, thisdata, base64Image, sampleId){
   let inputs = getFeatures(thisdata);
   let target = {class: thisclass};
