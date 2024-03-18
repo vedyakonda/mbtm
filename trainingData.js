@@ -1,4 +1,4 @@
-let acc, ctx, trainDivy = false; mbconnected = false;
+let acc, ctx, trainDivy = false, testDivy = false; mbconnected = false;
 let myChart;
 let datalines = {x:[],y:[],z:[]};
 let chartTime;
@@ -99,6 +99,9 @@ function nameClass(){
  }
 }
 
+
+
+//used for both training and testing
 function newClass(){
  let thisClass = nameClass();
  if (thisClass == "errorClassName") {
@@ -114,8 +117,15 @@ function createClassDiv(thisClassMod) {
  let node = document.createElement("div");
  node.id = thisClassMod;
  let rec = "'" + thisClassMod + "'";
- node.innerHTML = '<div><h3 style="display: inline-block;">' + thisClassMod + '</h3><button style="display: inline-block;" class="deleteClassButton" onclick="deleteClass(' + rec + ')">❌</button></div><div id="' + thisClassMod + 'recordDiv"><button id="' + thisClassMod + 'recordButton" onClick="record(' + rec + ')">➕ new data</button></div><div id="' + thisClassMod + 'chart-wrapper"></div><div id="' + thisClassMod + 'Data"></div>';
+ node.innerHTML = '<div><h3 style="display: inline-block;">' + thisClassMod + '</h3><button style="display: inline-block;" class="deleteClassButton" onclick="deleteClass(' + rec + ')">❌</button></div><div id="' + thisClassMod + 'recordDiv"><button id="' + thisClassMod + 'recordButton" onClick="record(' + rec + ',"train")">➕ new data</button></div><div id="' + thisClassMod + 'chart-wrapper"></div><div id="' + thisClassMod + 'Data"></div>';
  document.getElementById("myClasses").appendChild(node);
+ //testing classes
+ let testnode = document.createElement("div");
+ let testClassMod = thisClassMod + 'Test';
+ testnode.id = testClassMod;
+ let testrec = "'" + testClassMod + "'";
+ testnode.innerHTML = '<div><h3 style="display: inline-block;">' + testClassMod + '</h3><button style="display: inline-block;" class="deleteClassButton" onclick="deleteClass(' + testrec + ')">❌</button></div><div id="' + testClassMod + 'recordDiv"><button id="' + testClassMod + 'recordButton" onClick="record(' + testrec + ',"test")">➕ new data</button></div><div id="' + testClassMod + 'chart-wrapper"></div><div id="' + testClassMod + 'Data"></div>';
+ document.getElementById("myTestClasses").appendChild(testnode);
  count++;
 }
 
@@ -448,6 +458,7 @@ microBit.onBleNotify(function(){
    mbconnected = true;
    collapseConnect();
    openAllData();
+   openTestData(); //delete this after testdata implementation done
    collapseTestMdl();
    collapseUseMdl();
  }
@@ -456,4 +467,8 @@ microBit.onBleNotify(function(){
  if (!trainDivy){
    trainDiv();
  } 
+ //delete this after testdata implementation done
+ if (!testDivy){
+  testDiv();
+  } 
 });
