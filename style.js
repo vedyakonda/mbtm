@@ -19,11 +19,18 @@ function collapseAllData(){
     document.getElementById("allDataContent").classList.remove('showContent');
     document.getElementById("allDataContent").classList.add('hideContent');
     document.getElementById("allDataCO").innerHTML = '<a href="javascript:openAllData();">🔽</a>';
+    
 }
 function openAllData(){
     document.getElementById("allDataContent").classList.remove('hideContent');
     document.getElementById("allDataContent").classList.add('showContent');
     document.getElementById("allDataCO").innerHTML = '<a href="javascript:collapseAllData();">❎</a>';
+}
+
+function openTestData(){
+    document.getElementById("testDataContent").classList.remove('hideContent');
+    document.getElementById("testDataContent").classList.add('showContent');
+    document.getElementById("testDataCO").innerHTML = '<a href="javascript:collapseAllData();">❎</a>';
 }
 
 function collapseTrainMdl(){
