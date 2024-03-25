@@ -32,15 +32,8 @@ function logFile (event) {
  classes = JSON.parse(str);
  let keyClasses =  Object.keys(classes);
  for (let i = 0; i < keyClasses.length; i++){
-    testClass = keyClasses[i] + "Test";
-    testingData[testClass] = {}
-  //  createClassDiv(keyClasses[i]);
-  //  let thisClass = keyClasses[i];
-  //  let elementKeys = Object.keys(classes[keyClasses[i]]);
-  //  for (let j = 0; j < elementKeys.length; j++){
-  //    let b64 = classes[keyClasses[i]][elementKeys[j]].image;
-    
-  //    showChartImage(b64, thisClass);
+    testclass = keyClasses[i] + "Test";
+    testingData[testclass] = {}
   }
 
 //  testingData = JSON.parse(str);
@@ -64,15 +57,6 @@ function displayUp(){
     
      showChartImage(b64, thisClass);
    }
-
-  //  let testClass = thisClass + "Test";
-  //  createClassDiv(testClass[i]);
-  //  let testKeys = Object.keys(testingData[testClass[i]]);
-  //  for (let j = 0; j < testKeys.length; j++){
-  //   let b64 = testingData[testClass[i]][testKeys[j]].image;
-   
-  //   showChartImage(b64, testClass);
-  // }
  }
  trainDwld();
 
@@ -186,9 +170,16 @@ function deleteClass(thisclass) {
  let confirmation = confirm("Are you sure you want to delete this class?");
  if (confirmation) {
      // Delete the class and update the UI
-     delete classes[thisclass];
-     let classDiv = document.getElementById(thisclass);
-     classDiv.parentNode.removeChild(classDiv);
+     if (testingData[thisclass] == null) {
+      delete classes[thisclass];
+      let classDiv = document.getElementById(thisclass);
+      classDiv.parentNode.removeChild(classDiv);
+
+      let testclass = thisclass + "Test";
+      delete testingData[testclass];
+      let classDivTest = document.getElementById(testclass);
+      classDivTest.parentNode.removeChild(classDivTest);
+     }
  }
 
  ready2train = false;
@@ -307,16 +298,8 @@ function stopChart(thisclass){
   let rec = "'"+thisclass+"'";
   document.getElementById(thisclass+'recordDiv').innerHTML = '<button id="'+thisclass+'recordButton" onClick="record('+rec+')">➕ new data</button>';
   document.getElementById(thisclass+'chart-wrapper').classList.remove('chart-wrapper');
+  
  //storing data and saving data
- //PG: modify this
-
-  // console.log(thisclass)
-  // let keyClasses =  Object.keys(testingData);
-  // console.log(keyClasses.length);
-  // for (let i = 0; i < keyClasses.length; i++){
-  //   console.log("no")
-  //   console.log(keyClasses[i])
-  // }
   let keys;
   if (classes[thisclass] != null) {
     keys = Object.keys(classes[thisclass]);
@@ -368,7 +351,6 @@ function storeData (thisclass, thisdata, base64Image, sampleId){
   if (classes[thisclass] != null) {
     classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
   } else {
-    testclass = thisclass + "Test";
     testingData[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
   }
 
@@ -450,11 +432,15 @@ function deleteDataPoint(thisclass, imgId) {
  let confirmation = confirm("Are you sure you want to delete this data point?");
  if (confirmation) {
    let sampleId = imgId.replace(thisclass, '');
-   delete classes[thisclass][sampleId];
+   if (classes[thisclass] != null) {
+    delete classes[thisclass][sampleId];
+   } else {
+    delete testingData[thisclass][sampleId];
+   }
+   
    // update UI
    let dataElement = document.getElementById(imgId+'_div');
    dataElement.parentNode.removeChild(dataElement);
-   
    ready2train = false;
    shouldTrain();
  }
