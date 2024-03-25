@@ -30,6 +30,20 @@ function handleSubmit (event) {
 function logFile (event) {
  let str = event.target.result;
  classes = JSON.parse(str);
+ let keyClasses =  Object.keys(classes);
+ for (let i = 0; i < keyClasses.length; i++){
+    testClass = keyClasses[i] + "Test";
+    testingData[testClass] = {}
+  //  createClassDiv(keyClasses[i]);
+  //  let thisClass = keyClasses[i];
+  //  let elementKeys = Object.keys(classes[keyClasses[i]]);
+  //  for (let j = 0; j < elementKeys.length; j++){
+  //    let b64 = classes[keyClasses[i]][elementKeys[j]].image;
+    
+  //    showChartImage(b64, thisClass);
+  }
+
+//  testingData = JSON.parse(str);
  displayUp();
  document.getElementById("upldButton").classList.remove('hideContent');
  document.getElementById("upldButton").classList.add('showContent');
@@ -50,6 +64,15 @@ function displayUp(){
     
      showChartImage(b64, thisClass);
    }
+
+  //  let testClass = thisClass + "Test";
+  //  createClassDiv(testClass[i]);
+  //  let testKeys = Object.keys(testingData[testClass[i]]);
+  //  for (let j = 0; j < testKeys.length; j++){
+  //   let b64 = testingData[testClass[i]][testKeys[j]].image;
+   
+  //   showChartImage(b64, testClass);
+  // }
  }
  trainDwld();
 
@@ -100,8 +123,6 @@ function nameClass(){
  }
 }
 
-
-
 //used for both training and testing
 function newClass(){
  let thisClass = nameClass();
@@ -110,6 +131,10 @@ function newClass(){
  } else {
    let thisClassMod = thisClass.replace(/\s/g, '');
    classes[thisClassMod] = {};
+   let testClassMod = thisClassMod + 'Test';
+   testingData[testClassMod] = {};
+   let keyClasses = Object.keys(testingData);
+   console.log(keyClasses.length);
    createClassDiv(thisClassMod);
  } 
 }
@@ -284,7 +309,21 @@ function stopChart(thisclass){
   document.getElementById(thisclass+'chart-wrapper').classList.remove('chart-wrapper');
  //storing data and saving data
  //PG: modify this
-  let keys = Object.keys(classes[thisclass]);
+
+  // console.log(thisclass)
+  // let keyClasses =  Object.keys(testingData);
+  // console.log(keyClasses.length);
+  // for (let i = 0; i < keyClasses.length; i++){
+  //   console.log("no")
+  //   console.log(keyClasses[i])
+  // }
+  let keys;
+  if (classes[thisclass] != null) {
+    keys = Object.keys(classes[thisclass]);
+  } else {
+    keys = Object.keys(testingData[thisclass]);
+  }
+
   if (keys.length > 0) {
     let lastKey = keys[keys.length - 1];
     let num = lastKey.replace(/^el/, '');
@@ -302,11 +341,6 @@ function stopChart(thisclass){
   }
   
  }
-
-
- 
- 
-
 
 function getFeatures (thisdata){
    let inputs = {
@@ -331,7 +365,12 @@ function storeData (thisclass, thisdata, base64Image, sampleId){
   let inputs = getFeatures(thisdata);
   let target = {class: thisclass};
 
-  classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
+  if (classes[thisclass] != null) {
+    classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
+  } else {
+    testclass = thisclass + "Test";
+    testingData[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
+  }
 
   shouldTrain();
 }
