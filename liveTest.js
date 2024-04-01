@@ -2,6 +2,7 @@ let rawTestData = {x:[],y:[],z:[]};
 let dataStream = false, resultTestChart = false, resultUseChart = false, testChart, useChart, cux, cvx, modeUse = false, modeTest = false;
 //let confidenceData = {};
 let prevLabel = "";
+let maxLabel = "";
 
 function useModel(){
     getRawData();
@@ -63,15 +64,16 @@ function getRawData() {
                 rawTestData.x.push(acc.x/1024);
                 rawTestData.y.push(acc.y/1024);
                 rawTestData.z.push(acc.z/1024);
-                liveClassify();
+                liveClassify(rawTestData);
             } 
             getRawData();
         }
     }, 50);
 }
 
-function liveClassify(){
-    let input = getFeatures(rawTestData);
+function liveClassify(testData){
+    console.log("Called live classify!")
+    let input = getFeatures(testData);
     thisModel.classify(input, gotResult);
 }
 
@@ -103,14 +105,25 @@ function gotResult(error, results) {
 function updateTestChart(results){
     //console.log(results[0].label);
     let dta = [];
+    let max = Number.MIN_VALUE;
+    for (let j = 0; j < thisModelClasses.length; j++){
+        for (let i = 0; i < results.length; i++){
+            console.log("thisModel: " + thisModelClasses[j]);
+            console.log("result: " + results[i].label);
+            if (thisModelClasses[j] == results[i].label){
+                console.log("Update val");
+                let val = results[i].confidence
+                val = Math.round(val*100);
+                dta.push(val);
+                if (val > max) {
+                    console.log("Update max");
+                    max = val;
+                    maxLabel = results[i].label;
+                }
+            }   
+        }
+    }
     if (testChart != null){
-        for (let j = 0; j < thisModelClasses.length; j++){
-            for (let i = 0; i < results.length; i++){
-                if (thisModelClasses[j] == results[i].label){
-                    let val = results[i].confidence
-                    val = Math.round(val*100);
-                    dta.push(val);
-        }}}
         testChart.data.datasets[0].data = dta;
         testChart.update();
     }
@@ -121,14 +134,25 @@ function updateTestChart(results){
 function updateUseChart(results){
     //console.log(results[0].label);
     let dta = [];
+    let max = Number.MIN_VALUE;
+    
+    
+    for (let j = 0; j < thisModelClasses.length; j++){
+        for (let i = 0; i < results.length; i++){
+            if (thisModelClasses[j] == results[i].label){
+                console.log("Update val");
+                let val = results[i].confidence
+                val = Math.round(val*100);
+                dta.push(val);
+                if (val > max) {
+                    console.log("Update max");
+                    max = val;
+                    maxLabel = results[i].label;
+                }
+            }
+        }
+    }
     if (useChart != null){
-        for (let j = 0; j < thisModelClasses.length; j++){
-            for (let i = 0; i < results.length; i++){
-                if (thisModelClasses[j] == results[i].label){
-                    let val = results[i].confidence
-                    val = Math.round(val*100);
-                    dta.push(val);
-        }}}
         useChart.data.datasets[0].data = dta;
         useChart.update();
         sendtoMB(results[0].label);
@@ -137,16 +161,28 @@ function updateUseChart(results){
 
 
 function createTestChart(results){
-    cux = document.getElementById('testConfidence').getContext('2d');
+    if (document.getElementById('useConfidence') != null ) {
+        cux = document.getElementById('testConfidence').getContext('2d');
+    }
     let dta = [];
+    let max = Number.MIN_VALUE;
         for (let j = 0; j < thisModelClasses.length; j++){
             for (let i = 0; i < results.length; i++){
+                console.log("thisModel: " + thisModelClasses[j]);
+                console.log("result: " + results[i].label);
                 if (thisModelClasses[j] == results[i].label){
+                    console.log("Update val");
                     let val = results[i].confidence
                     val = Math.round(val*100);
                     dta.push(val);
+                    if (val > max) {
+                        console.log("Update max");
+                        max = val;
+                        maxLabel = results[i].label;
+                    }
         }}}
 
+    if (document.getElementById('useConfidence') != null ) {
         var chartData = {
             labels: thisModelClasses,
             datasets: [{
@@ -187,18 +223,26 @@ function createTestChart(results){
             options: chartOptions
         });
         resultTestChart = true;
+    }
 }
 
 
 function createUseChart(results){
     cvx = document.getElementById('useConfidence').getContext('2d');
         let dta = [];
+        let max = Number.MIN_VALUE;
         for (let j = 0; j < thisModelClasses.length; j++){
             for (let i = 0; i < results.length; i++){
                 if (thisModelClasses[j] == results[i].label){
+                    console.log("Update val");
                     let val = results[i].confidence
                     val = Math.round(val*100);
                     dta.push(val);
+                    if (val > max) {
+                        console.log("Update max");
+                        max = val;
+                        maxLabel = results[i].label;
+                    }
                 }
             }
         }
