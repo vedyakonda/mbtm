@@ -30,6 +30,13 @@ function handleSubmit (event) {
 function logFile (event) {
  let str = event.target.result;
  classes = JSON.parse(str);
+ let keyClasses =  Object.keys(classes);
+ for (let i = 0; i < keyClasses.length; i++){
+    testclass = keyClasses[i] + "Test";
+    testingData[testclass] = {}
+  }
+
+//  testingData = JSON.parse(str);
  displayUp();
  document.getElementById("upldButton").classList.remove('hideContent');
  document.getElementById("upldButton").classList.add('showContent');
@@ -100,8 +107,6 @@ function nameClass(){
  }
 }
 
-
-
 //used for both training and testing
 function newClass(){
  let thisClass = nameClass();
@@ -110,6 +115,10 @@ function newClass(){
  } else {
    let thisClassMod = thisClass.replace(/\s/g, '');
    classes[thisClassMod] = {};
+   let testClassMod = thisClassMod + 'Test';
+   testingData[testClassMod] = {};
+   let keyClasses = Object.keys(testingData);
+   console.log(keyClasses.length);
    createClassDiv(thisClassMod);
  } 
 }
@@ -161,9 +170,16 @@ function deleteClass(thisclass) {
  let confirmation = confirm("Are you sure you want to delete this class?");
  if (confirmation) {
      // Delete the class and update the UI
-     delete classes[thisclass];
-     let classDiv = document.getElementById(thisclass);
-     classDiv.parentNode.removeChild(classDiv);
+     if (testingData[thisclass] == null) {
+      delete classes[thisclass];
+      let classDiv = document.getElementById(thisclass);
+      classDiv.parentNode.removeChild(classDiv);
+
+      let testclass = thisclass + "Test";
+      delete testingData[testclass];
+      let classDivTest = document.getElementById(testclass);
+      classDivTest.parentNode.removeChild(classDivTest);
+     }
  }
 
  ready2train = false;
@@ -277,36 +293,52 @@ function stopChart(thisclass){
   myChart.destroy();
   myChart = null;
   ctx = null;
-  datalines = {x:[],y:[],z:[]};
   document.getElementById(thisclass+'chart-wrapper').innerHTML = '';
   let rec = "'"+thisclass+"'";
   document.getElementById(thisclass+'recordDiv').innerHTML = '<button id="'+thisclass+'recordButton" onClick="record('+rec+')">➕ new data</button>';
   document.getElementById(thisclass+'chart-wrapper').classList.remove('chart-wrapper');
+  
  //storing data and saving data
- //PG: modify this
-  let keys = Object.keys(classes[thisclass]);
+  let keys;
+  if (classes[thisclass] != null) {
+    keys = Object.keys(classes[thisclass]);
+  } else {
+    keys = Object.keys(testingData[thisclass]);
+  }
+
   if (keys.length > 0) {
     let lastKey = keys[keys.length - 1];
     let num = lastKey.replace(/^el/, '');
     let newNum = parseInt(num) + 1;
     let sampleId = 'el' + newNum; 
     imgId = thisclass + sampleId;
+    
     storeData(thisclass, thisdata, base64Image, sampleId);
-    showChartImage(base64Image, thisclass, imgId);
+
+    let prediction = -1;
+    if (testingData[thisclass] != null) {
+      console.log("Prediction: " + testingData[thisclass][sampleId].prediction);
+      prediction = testingData[thisclass][sampleId].prediction;
+    }
+
+    showChartImage(base64Image, thisclass, imgId, prediction);
   } else {
     let newKey = keys.length + 1;
     let sampleId = 'el' + newKey; 
     imgId = thisclass + sampleId;
+
     storeData(thisclass, thisdata, base64Image, sampleId);
-    showChartImage(base64Image, thisclass, imgId);
+
+    let prediction = -1;
+    if (testingData[thisclass] != null) {
+      console.log("Prediction: " + testingData[thisclass][sampleId].prediction);
+      prediction = testingData[thisclass][sampleId].prediction;
+    }
+
+    showChartImage(base64Image, thisclass, imgId, prediction);
   }
   
  }
-
-
- 
- 
-
 
 function getFeatures (thisdata){
    let inputs = {
@@ -331,8 +363,31 @@ function storeData (thisclass, thisdata, base64Image, sampleId){
   let inputs = getFeatures(thisdata);
   let target = {class: thisclass};
 
-  classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs]};
+  modeTest = true;
 
+  liveClassify(datalines);
+  
+  let thisprediction = 0;
+
+  let testclass = "";
+  if (testingData[thisclass] != null && thisclass.length > 4) {
+    testclass = thisclass.substring(0, thisclass.length - 4);
+  }
+
+  if (maxLabel == testclass) {
+    thisprediction = 1;
+  }
+
+  console.log("Max Label: " + maxLabel);
+  console.log("This Label: " + testclass);
+
+  if (classes[thisclass] != null) {
+    classes[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs], prediction: thisprediction};
+  } else {
+    testingData[thisclass][sampleId] = {data: thisdata, image: base64Image, m: [target, inputs], prediction: thisprediction};
+  }
+
+  datalines = {x:[],y:[],z:[]};
   shouldTrain();
 }
 
@@ -394,15 +449,29 @@ function calculatePeaks(array) {
 }
  
 
-function showChartImage(b64, thisclass, imgId){
+function showChartImage(b64, thisclass, imgId, prediction){
 
  var imageContainer = document.getElementById(thisclass+'Data');
  //imageContainer.innerHTML = '';
  var div = document.createElement('div'); 
  div.id = imgId + '_div'; //add id to the div
  div.setAttribute('style', 'position: relative; display: inline-block;'); 
- div.innerHTML = '<img src="' + b64 + '" id="'+imgId+'_img" style=" height:125px;" </img>' + 
- '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick="deleteDataPoint(\'' + thisclass + '\', \'' + imgId + '\')">❌</button>' 
+ if (prediction == 0) {
+  div.innerHTML = '<img src="' + b64 + '" id="'+imgId+'_img" style=" height:125px;" </img>' + 
+  '<button class ="classButton" style="position: absolute; top: -10; right: 0;" onClick="deleteDataPoint(\'' + thisclass + '\', \'' + imgId + '\')">❌</button>' 
+  '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick="deleteDataPoint(\'' + thisclass + '\', \'' + imgId + '\')">❌</button>' 
+  console.log("Incorrect Prediction!");
+ } else if (prediction == 1) {
+  div.innerHTML = '<img src="' + b64 + '" id="'+imgId+'_img" style=" height:125px;" </img>' + 
+  '<button class ="classButton" style="position: absolute; top: -10; right: 0;" onClick="deleteDataPoint(\'' + thisclass + '\', \'' + imgId + '\')">✅</button>' 
+  '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick="deleteDataPoint(\'' + thisclass + '\', \'' + imgId + '\')">❌</button>' 
+  console.log("Correct Prediction!");
+ } else {
+  div.innerHTML = '<img src="' + b64 + '" id="'+imgId+'_img" style=" height:125px;" </img>' + 
+  '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick="deleteDataPoint(\'' + thisclass + '\', \'' + imgId + '\')">❌</button>' 
+  console.log("No Prediction (training data)!");
+ }
+
  
  imageContainer.appendChild(div);
 }
@@ -411,11 +480,15 @@ function deleteDataPoint(thisclass, imgId) {
  let confirmation = confirm("Are you sure you want to delete this data point?");
  if (confirmation) {
    let sampleId = imgId.replace(thisclass, '');
-   delete classes[thisclass][sampleId];
+   if (classes[thisclass] != null) {
+    delete classes[thisclass][sampleId];
+   } else {
+    delete testingData[thisclass][sampleId];
+   }
+   
    // update UI
    let dataElement = document.getElementById(imgId+'_div');
    dataElement.parentNode.removeChild(dataElement);
-   
    ready2train = false;
    shouldTrain();
  }
