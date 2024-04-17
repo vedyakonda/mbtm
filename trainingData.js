@@ -4,6 +4,8 @@ let datalines = { x: [], y: [], z: [] };
 let chartTime;
 let classes = {}; //stores training data
 let testingData = {}; //stores testing data
+let testingAccuracy = {};
+let predData = {};
 let ready2train = false;
 let count = 1;
 let form, file;
@@ -134,7 +136,7 @@ function createClassDiv(thisClassMod) {
   let testClassMod = thisClassMod + 'Test';
   testnode.id = testClassMod;
   let testrec = "'" + testClassMod + "'";
-  testnode.innerHTML = '<div><h3 style="display: inline-block;">' + testClassMod + '</h3><button style="display: inline-block;" class="deleteClassButton" onclick="deleteClass(' + testrec + ')">❌</button></div><div id="' + testClassMod + 'recordDiv"><button id="' + testClassMod + 'recordButton" onClick="record(' + testrec + ')">➕ new data</button></div><div id="' + testClassMod + 'chart-wrapper"></div><div id="' + testClassMod + 'Data"></div>';
+  testnode.innerHTML = '<div><h3 style="display: inline-block;">' + testClassMod + '</h3><div><span>Accuracy: </span></div></div><div id="' + testClassMod + 'Accuracy"></div><div id="' + testClassMod + 'recordDiv"><button id="' + testClassMod + 'recordButton" onClick="record(' + testrec + ')">➕ new data</button></div><div id="' + testClassMod + 'chart-wrapper"></div><div id="' + testClassMod + 'Data"></div>';
   document.getElementById("myTestClasses").appendChild(testnode);
   count++;
 }
@@ -395,7 +397,9 @@ function trainDwld() {
   ready2train = true;
   openTrainMdl();
   document.getElementById("trainButtonDiv").innerHTML = '<button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>';
-
+  if (Object.keys(testingData).length > 0) {
+    repredictData();
+  }
 }
 
 
