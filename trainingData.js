@@ -405,8 +405,8 @@ function showChartImage(b64, thisclass, imgId){
  div.id = imgId + '_div'; //add id to the div
  div.setAttribute('style', 'position: relative; display: inline-block;'); 
  div.innerHTML = '<img src="' + b64 + '" id="'+imgId+'_img" style=" height:125px;" </img>' + 
- '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick="deleteDataPoint(\'' + thisclass + '\', \'' + imgId + '\')">❌</button>' 
- 
+ '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick=deleteDataPoint("'+thisclass+'","' + imgId + '")>❌</button>'
+  
  imageContainer.appendChild(div);
 }
 
