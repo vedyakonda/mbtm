@@ -81,7 +81,8 @@ function repredictData() {
             let b64 = testingData[thisClass][sampleId].image;
             storeTestData(thisClass, data, b64, sampleId);
         }
-      }
+        classifySample(keyClasses[i]);
+    }
     // let keyClasses = Object.keys(testingData);
     // for (let i = 0; i < keyClasses.length; i++) {
     //     let idClasses = Object.keys(testingData[keyClasses[i]]);
