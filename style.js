@@ -33,7 +33,9 @@ function openTestData() {
     document.getElementById("testDataCO").innerHTML = '<a href="javascript:collapseAllData();">❎</a>';
 }
 
-function collapseTrainMdl() {
+
+function collapseTrainMdl(){
+
     document.getElementById("trainMdlContent").classList.remove('showContent');
     document.getElementById("trainMdlContent").classList.add('hideContent');
     document.getElementById("trainMdlCO").innerHTML = '<a href="javascript:openTrainMdl();">🔽</a>';

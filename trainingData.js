@@ -1,4 +1,5 @@
-let acc, ctx, trainDivy = false, testDivy = false; mbconnected = false;
+
+let acc, ctx, trainDivy = false, testDivy = false;mbconnected = false;
 let myChart;
 let datalines = { x: [], y: [], z: [] };
 let chartTime;
@@ -47,20 +48,21 @@ function logFile(event) {
 }
 
 
-function displayUp() {
-  document.getElementById("myClasses").innerHTML = "";
-  let keyClasses = Object.keys(classes);
-  for (let i = 0; i < keyClasses.length; i++) {
-    createClassDiv(keyClasses[i]);
-    let thisClass = keyClasses[i];
-    let elementKeys = Object.keys(classes[keyClasses[i]]);
-    for (let j = 0; j < elementKeys.length; j++) {
-      let b64 = classes[keyClasses[i]][elementKeys[j]].image;
 
-      showChartImage(b64, thisClass);
-    }
-  }
-  trainDwld();
+function displayUp(){
+ document.getElementById("myClasses").innerHTML = "";
+ let keyClasses =  Object.keys(classes);
+ for (let i = 0; i < keyClasses.length; i++){
+   createClassDiv(keyClasses[i]);
+   let thisClass = keyClasses[i];
+   let elementKeys = Object.keys(classes[keyClasses[i]]);
+   for (let j = 0; j < elementKeys.length; j++){
+     let b64 = classes[keyClasses[i]][elementKeys[j]].image;
+    
+     showChartImage(b64, thisClass, imgId);
+   }
+ }
+ trainDwld();
 
 }
 
@@ -109,7 +111,6 @@ function nameClass() {
   }
 }
 
-//used for both training and testing
 function newClass() {
   let thisClass = nameClass();
   if (thisClass == "errorClassName") {
@@ -168,33 +169,37 @@ function deleteRecentData(thisclass) {
 
 
 function deleteClass(thisclass) {
-  // Prompt the user for confirmation before deleting the class
-  let confirmation = confirm("Are you sure you want to delete this class?");
-  if (confirmation) {
-    // Delete the class and update the UI
-    if (testingData[thisclass] == null) {
-      delete classes[thisclass];
-      let classDiv = document.getElementById(thisclass);
-      classDiv.parentNode.removeChild(classDiv);
 
-      let testclass = thisclass + "Test";
-      delete testingData[testclass];
-      let classDivTest = document.getElementById(testclass);
-      classDivTest.parentNode.removeChild(classDivTest);
-    }
-  }
-
-  ready2train = false;
-  shouldTrain();
+   // Prompt the user for confirmation before deleting the class
+   let confirmation = confirm("Are you sure you want to delete this class?");
+   if (confirmation) {
+     // Delete the class and update the UI
+     if (testingData[thisclass] == null) {
+       delete classes[thisclass];
+       let classDiv = document.getElementById(thisclass);
+       classDiv.parentNode.removeChild(classDiv);
+ 
+       let testclass = thisclass + "Test";
+       delete testingData[testclass];
+       let classDivTest = document.getElementById(testclass);
+       classDivTest.parentNode.removeChild(classDivTest);
+     }
+   }
+ 
+   ready2train = false;
+   shouldTrain();
 }
 
 
-
 function record(thisclass) {
+  // Disable all "New Data" buttons
+  disableAllRecordButtons();
   document.getElementById(thisclass + 'chart-wrapper').classList.add('chart-wrapper');
   document.getElementById(thisclass + 'recordDiv').innerHTML = "🔴 recording";
   document.getElementById(thisclass + 'chart-wrapper').innerHTML = '<canvas id="' + thisclass + 'Canvas"></canvas>';
   ctx = document.getElementById(thisclass + 'Canvas').getContext('2d');
+  console.log('record called');
+
   let chrlabels = new Array(41);
   chrlabels.fill("");
   datalines.x.push(acc.x / 1024);
@@ -216,14 +221,13 @@ function record(thisclass) {
       fill: false,
       pointStyle: false
     }, {
-      label: 'Z',
-      data: datalines.z,
-      borderColor: 'purple',
-      fill: false,
-      pointStyle: false
-    }]
+       label: 'Z',
+       data: datalines.z,
+       borderColor: 'purple',
+       fill: false,
+       pointStyle: false
+   }]
   };
-
 
   chartTime = 1;
   // Create the chart with the initial data
@@ -231,29 +235,43 @@ function record(thisclass) {
     type: 'line',
     data: initialData,
     options: {
-      animation: {
-        duration: 0
-      },
-      interaction: {
-        mode: 'none',  // Disable all interactions
-        intersect: false  // Disable data point hover intersections
-      },
-      tooltips: { enabled: false },
-      hover: { mode: null },
-      responsive: true,
-      //maintainAspectRatio: false,
-      scales: {
-        y: {
-          min: -2,
-          max: 2
+        animation: {
+          duration: 0
+        },
+        interaction: {
+          mode: 'none',  // Disable all interactions
+          intersect: false  // Disable data point hover intersections
+        },
+        tooltips: {enabled: false},
+        hover: {mode: null},
+        responsive: true,
+        //maintainAspectRatio: false,
+        scales: {
+            y: {
+                min: -2,
+                max: 2
+            }
         }
-      }
     }
   });
 
   callUpdate(thisclass);
+}
 
+function disableAllRecordButtons() {
+  // Disable all "New Data" buttons
+  let recordButtons = document.querySelectorAll('[id$="recordButton"]');
+  recordButtons.forEach(button => {
+    button.disabled = true;
+  });
+}
 
+function enableAllRecordButtons() {
+  // Enable all "New Data" buttons
+  let recordButtons = document.querySelectorAll('[id$="recordButton"]');
+  recordButtons.forEach(button => {
+    button.disabled = false;
+  });
 }
 
 // Function to update the data and redraw the chart
@@ -272,29 +290,28 @@ function updateData(thisclass) {
   callUpdate(thisclass);
 }
 
-function callUpdate(thisclass) {
-  setTimeout(function () {
-    if (chartTime > 2000) {
-      stopChart(thisclass);
-    } else {
-      chartTime = chartTime + 50;
-      updateData(thisclass);
-    }
-  }, 50);
-  //console.log(chartTime);
+function callUpdate(thisclass){
+ setTimeout(function() {
+   if (chartTime > 2000){
+     stopChart(thisclass);
+     enableAllRecordButtons(); // Re-enable all "New Data" buttons when the chart is finished
+   } else {
+     chartTime = chartTime+50;
+     updateData(thisclass);
+   }
+ }, 50);
+ //console.log(chartTime);
 }
 
-
-
-
-function stopChart(thisclass) {
-  //stops the chart
+function stopChart(thisclass){
   let base64Image = myChart.toBase64Image();
   let thisdata = datalines;
   let imgId;
   myChart.destroy();
   myChart = null;
   ctx = null;
+
+  datalines = {x:[],y:[],z:[]}; //phillip deleted this 
   document.getElementById(thisclass + 'chart-wrapper').innerHTML = '';
   let rec = "'" + thisclass + "'";
   document.getElementById(thisclass + 'recordDiv').innerHTML = '<button id="' + thisclass + 'recordButton" onClick="record(' + rec + ')">➕ new data</button>';
@@ -332,7 +349,7 @@ function stopChart(thisclass) {
     }
   }
 
-}
+ }
 
 function getFeatures(thisdata) {
   let inputs = {
@@ -352,7 +369,7 @@ function getFeatures(thisdata) {
   return inputs;
 }
 
-//modify store data
+
 function storeData(thisclass, thisdata, base64Image, sampleId) {
   let inputs = getFeatures(thisdata);
   let target = { class: thisclass };
@@ -382,11 +399,11 @@ function shouldTrain() {
       }
     } else {
       doNotTrain();
-    }
+     }
   }
-}
-
-function doNotTrain() {
+  }
+   
+function doNotTrain(){
   document.getElementById("trainButtonDiv").innerHTML = ''; // Remove the "Train Model" button
 
 }
@@ -428,7 +445,7 @@ function showChartImage(b64, thisclass, imgId) {
   div.id = imgId + '_div'; //add id to the div
   div.setAttribute('style', 'position: relative; display: inline-block;');
   let inner = '<img src="' + b64 + '" id="' + imgId + '_img" style=" height:125px;" </img>' +
-    '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick="deleteDataPoint(\'' + thisclass + '\', \'' + imgId + '\')">❌</button>'
+    '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick="deleteDataPoint("'+thisclass+'","' + imgId + '")">❌</button>'
   if (testingData[thisclass] != null) {
     inner = '<div id="' + imgId + '_pred"></div>' + inner;
   }
@@ -447,7 +464,8 @@ function deleteDataPoint(thisclass, imgId) {
     }
 
     // update UI
-    let dataElement = document.getElementById(imgId + '_div');
+    let dataElement = document.getElementById(imgId+'_div');
+
     dataElement.parentNode.removeChild(dataElement);
     ready2train = false;
     shouldTrain();
@@ -489,23 +507,23 @@ function searchDevice() {
   microBit.searchDevice();
 }
 
-microBit.onBleNotify(function () {
-  if (!mbconnected) {
-    document.getElementById("connectMicro").innerHTML = "Your microBit is connected!";
-    mbconnected = true;
-    collapseConnect();
-    openAllData();
-    openTestData(); //delete this after testdata implementation done
-    collapseTestMdl();
-    collapseUseMdl();
-  }
-  acc = microBit.getAccelerometer();
+microBit.onBleNotify(function(){
+ if (!mbconnected){
+   document.getElementById("connectMicro").innerHTML =  "Your microBit is connected!";
+   mbconnected = true;
+   collapseConnect();
+   openAllData();
+   openTestData(); //delete this after testdata implementation done
+   collapseTestMdl();
+   collapseUseMdl();
+ }
+ acc = microBit.getAccelerometer();
   //console.log(acc);
-  if (!trainDivy) {
-    trainDiv();
-  }
-  //delete this after testdata implementation done
-  if (!testDivy) {
-    testDiv();
+ if (!trainDivy){
+   trainDiv();
+ } 
+ //delete this after testdata implementation done
+ if (!testDivy) {
+  testDiv();
   }
 });
