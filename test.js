@@ -21,12 +21,15 @@ function liveTest() {
     modeTest = true;
 }
 
+
 function testDataStreamOff() {
-    resultTestChart = false;
-    testChart.destroy();
+    if (testChart) {
+        resultTestChart = false;
+        testChart.destroy();
+        testChart = null;
+    }
     cux = null;
-    testChart = null;
-    if (!modeUse){
+    if (!modeUse) {
         dataStream = false;
     }
     modeTest = false;
@@ -35,11 +38,16 @@ function testDataStreamOff() {
     document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestButton" onClick="liveTest()">Live Test</button>';
 }
 
+
 function useDataStreamOff() {
-    resultUseChart = false;
-    useChart.destroy();
+    if(useChart) {
+        resultUseChart = false;
+        useChart.destroy();
+        useChart = null;
+    }
+
     cvx = null;
-    useChart = null;
+   
     if (!modeTest){
         dataStream = false;
     }
@@ -80,25 +88,35 @@ function gotResult(error, results) {
         console.error(error);
         return;
     } else {
-        if (modeTest){
-            if (!resultTestChart){
-                createTestChart(results);
+        console.log(results);
+        let hasInvalidConfidence = results.some(result => isNaN(result.confidence) || result.confidence === null);// Check if the confidence of any class is NaN or null
 
-            } else {
-                updateTestChart(results);
+        if (hasInvalidConfidence) {
+            let confirmation = window.confirm("Some classes have invalid confidence values and can be fixed by diversifying your data. Either create a new class or increase the diversity in your existing classes.");
+
+            if (confirmation) {
+                console.log("hello")
+                testDataStreamOff();
+                useDataStreamOff();
             }
-        }
-        if (modeUse){
-            if (!resultUseChart){
-                createUseChart(results);
-
-            } else {
-                updateUseChart(results);
+        } else {
+            if (modeTest){
+                if (!resultTestChart){
+                    createTestChart(results);
+                } else {
+                    updateTestChart(results);
+                }
+            }
+            if (modeUse){
+                if (!resultUseChart){
+                    createUseChart(results);
+                } else {
+                    updateUseChart(results);
+                }
             }
         }
     }
 }
-
 
 function updateTestChart(results){
     //console.log(results[0].label);

@@ -162,69 +162,85 @@ function deleteClass(thisclass) {
 
 
 function record(thisclass){
- document.getElementById(thisclass+'chart-wrapper').classList.add('chart-wrapper');
- document.getElementById(thisclass+'recordDiv').innerHTML = "🔴 recording";
- document.getElementById(thisclass+'chart-wrapper').innerHTML = '<canvas id="'+thisclass+'Canvas"></canvas>';
- ctx = document.getElementById(thisclass+'Canvas').getContext('2d');
- let chrlabels = new Array(41);
- chrlabels.fill("");
- datalines.x.push(acc.x/1024);
- datalines.y.push(acc.y/1024);
- datalines.z.push(acc.z/1024);
+  // Disable all "New Data" buttons
+  disableAllRecordButtons();
 
- let initialData = {
-   labels: chrlabels,
-   datasets: [{
-       label: 'X',
-       data: datalines.x,
-       borderColor: 'red',
+  document.getElementById(thisclass+'chart-wrapper').classList.add('chart-wrapper');
+  document.getElementById(thisclass+'recordDiv').innerHTML = "🔴 recording";
+  document.getElementById(thisclass+'chart-wrapper').innerHTML = '<canvas id="'+thisclass+'Canvas"></canvas>';
+  ctx = document.getElementById(thisclass+'Canvas').getContext('2d');
+  let chrlabels = new Array(41);
+  chrlabels.fill("");
+  datalines.x.push(acc.x/1024);
+  datalines.y.push(acc.y/1024);
+  datalines.z.push(acc.z/1024);
+
+  let initialData = {
+    labels: chrlabels,
+    datasets: [{
+        label: 'X',
+        data: datalines.x,
+        borderColor: 'red',
+        fill: false,
+        pointStyle: false
+    }, {
+        label: 'Y',
+        data: datalines.y,
+        borderColor: 'blue',
+        fill: false,
+        pointStyle: false
+    },{
+       label: 'Z',
+       data: datalines.z,
+       borderColor: 'purple',
        fill: false,
        pointStyle: false
-   }, {
-       label: 'Y',
-       data: datalines.y,
-       borderColor: 'blue',
-       fill: false,
-       pointStyle: false
-   },{
-      label: 'Z',
-      data: datalines.z,
-      borderColor: 'purple',
-      fill: false,
-      pointStyle: false
-  }]
- };
+   }]
+  };
 
-
- chartTime = 1;
+  chartTime = 1;
   // Create the chart with the initial data
- myChart = new Chart(ctx, {
-   type: 'line',
-   data: initialData,
-   options: {
-       animation: {
-         duration: 0
-       },
-       interaction: {
-         mode: 'none',  // Disable all interactions
-         intersect: false  // Disable data point hover intersections
-       },
-       tooltips: {enabled: false},
-       hover: {mode: null},
-       responsive: true,
-       //maintainAspectRatio: false,
-       scales: {
-           y: {
-               min: -2,
-               max: 2
-           }
-       }
-   }
- });
+  myChart = new Chart(ctx, {
+    type: 'line',
+    data: initialData,
+    options: {
+        animation: {
+          duration: 0
+        },
+        interaction: {
+          mode: 'none',  // Disable all interactions
+          intersect: false  // Disable data point hover intersections
+        },
+        tooltips: {enabled: false},
+        hover: {mode: null},
+        responsive: true,
+        //maintainAspectRatio: false,
+        scales: {
+            y: {
+                min: -2,
+                max: 2
+            }
+        }
+    }
+  });
 
- callUpdate(thisclass);
- 
+  callUpdate(thisclass);
+}
 
+function disableAllRecordButtons() {
+  // Disable all "New Data" buttons
+  let recordButtons = document.querySelectorAll('[id$="recordButton"]');
+  recordButtons.forEach(button => {
+    button.disabled = true;
+  });
+}
+
+function enableAllRecordButtons() {
+  // Enable all "New Data" buttons
+  let recordButtons = document.querySelectorAll('[id$="recordButton"]');
+  recordButtons.forEach(button => {
+    button.disabled = false;
+  });
 }
 
 // Function to update the data and redraw the chart
@@ -247,6 +263,7 @@ function callUpdate(thisclass){
  setTimeout(function() {
    if (chartTime > 2000){
      stopChart(thisclass);
+     enableAllRecordButtons(); // Re-enable all "New Data" buttons when the chart is finished
    } else {
      chartTime = chartTime+50;
      updateData(thisclass);
@@ -355,10 +372,10 @@ function shouldTrain (){
 
 
 function trainDwld() {
-     document.getElementById("dwnld").innerHTML = '<button id="dwnldButton" onClick="downloadObjectAsJson()">Download all data</button>';
-     ready2train = true;
-     openTrainMdl();
-     document.getElementById("trainButtonDiv").innerHTML = '<button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>';
+  document.getElementById("dwnld").innerHTML = '<button style ="padding: 2px;" id="dwnldButton" onClick="downloadObjectAsJson()">Download all data</button>';
+  ready2train = true;
+  openTrainMdl();
+  document.getElementById("trainButtonDiv").innerHTML = '<button id="trainButton" onClick="setNeuralNetwork()">Train Model</button>';
 
 }
 
