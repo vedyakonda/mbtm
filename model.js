@@ -1,5 +1,6 @@
 let thisModel;
 let thisModelClasses;
+let trained = false;
 
 function trainingData(){
     
@@ -57,10 +58,40 @@ function setNeuralNetwork() {
 function finishedTraining(){
     document.getElementById('trainButtonDiv').innerHTML =  '<button id="trainButton" onClick="setNeuralNetwork()">Retrain Model</button>';
     console.log("model trained");
-
+    if (Object.keys(testingData).length > 0) {
+        repredictData();
+    }
     document.getElementById('testModelButtonDiv').innerHTML = '<button id="LiveTestButton" onClick="liveTest()">Live Test</button>';
     document.getElementById('useButtonDiv').innerHTML ='<button id="LiveUseButton" onClick="useModel()">Use model to send data to microBit</button>';
     openTestMdl();
     openUseMdl();
     collapseTrainMdl();
+    trained = true;
+}
+
+
+function repredictData() {
+    console.log("Repredicted data!");
+    let keyClasses = Object.keys(testingData);
+    for (let i = 0; i < keyClasses.length; i++) {
+        let thisClass = keyClasses[i];
+        let elementKeys = Object.keys(testingData[thisClass]);
+        for (let j = 0; j < elementKeys.length; j++) {
+            let sampleId = elementKeys[j];
+            let data = testingData[thisClass][sampleId].data;
+            let b64 = testingData[thisClass][sampleId].image;
+            storeTestData(thisClass, data, b64, sampleId);
+        }
+      }
+    // let keyClasses = Object.keys(testingData);
+    // for (let i = 0; i < keyClasses.length; i++) {
+    //     let idClasses = Object.keys(testingData[keyClasses[i]]);
+    //     for (let j = 0; j < idClasses.length; j++) {
+    //         let thisclass = keyClasses[i];
+    //         let sampleId = idClasses[j];
+    //         if (Object.keys(testingData[thisclass][sampleId] > 0)) {
+    //             storeTestData(thisclass, testingAccuracy[thisclass][sampleId]['data'], testingAccuracy[thisclass][sampleId]['image'], sampleId);
+    //         }
+    //     }
+    // }
 }
