@@ -26,24 +26,22 @@
 </style>
 
 <body>
-  <div class="container">
-    <h1 class="center-element">mbtm</h1>
-  </div>
+  <div class="container"><h1 class="center-element">mbtm</h1></div>
   <div id="connect" class="corners">
     <div class="titleCont">
-      <h2>🔌 Connect your micro:bit
-        <div id="connectCO" class="icon">
-          <a href="javascript:collapseConnect();">❎</a>
-        </div>
-      </h2>
+    <h2>🔌 Connect your microBit
+      <div id="connectCO" class="icon">
+        <a href="javascript:collapseConnect();">❎</a>
+      </div>
+    </h2>
     </div>
-    <div id="connectContent" class="showContent">
+    <div id = "connectContent" class="showContent">
       <div id="connectMicro">
-        <p>Prior to connecting your microBit make sure that you have uploaded the
+        <p>Prior to connecting your microBit make sure that you have uploaded the 
           <a href="https://makecode.microbit.org/S38115-90979-26199-65920" target="_blank">
-            sample code</a>
+          sample code</a>
           to the microcontroller.
-          Once you upload the code press on the button below to connect!
+          Once you upload the code press on the button below to connect!  
         </p>
         <button id="searchButton" onClick="searchDevice()"> Pair your microBit</button>
       </div>
@@ -64,8 +62,7 @@
           <button id="uploadButton" class="buttin" onClick="showUpload()"> Upload file</button>
         </div>
         <div id="upld" class="hideContent">
-          <form id="upload"><label for="file">Upload data:</label><input type="file" id="file"
-              accept=".json"><button>Upload</button></form>
+          <form id="upload"><label for="file">Upload data:</label><input type="file" id="file" accept=".json"><button>Upload</button></form>
         </div>
         <div id="dwnld"></div>
       </div>
@@ -80,8 +77,7 @@
       </div>
     </h2>
     <div id="trainMdlContent" class="hideContent">
-      <div id="trainButtonDiv">To train your model you must add more training data to have at least 2 classes with 4
-        data samples each.</div>
+      <div id="trainButtonDiv">To train your model you must add more training data to have at least 2 classes with 4 data samples each.</div>
     </div>
   </div>
 
@@ -108,27 +104,28 @@
     </div>
   </div>
 
+
   <div id="testMdl" class="corners">
-    <h2>🧪 Live test your model
+    <h2>🧪 Live Test your model
       <div id="testMdlCO" class="icon">
         <a href="javascript:openTestMdl();">🔽</a>
       </div>
     </h2>
     <div id="testMdlContent" class="hideContent">
       <div id="testModelButtonDiv">Add training data and train a model first!</div>
-      <div id="testChart"></div>
-    </div>
+      <div id = "testChart" ></div>
+    </div> 
   </div>
 
   <div id="useMdl" class="corners">
-    <h2>😎 Send data to micro:bit
+    <h2>😎 Use your model
       <div id="useMdlCO" class="icon">
         <a href="javascript:openUseMdl();">🔽</a>
       </div>
     </h2>
     <div id="useMdlContent" class="hideContent">
       <div id="useButtonDiv">Add training data and train a model first!</div>
-      <div id="useChart"></div>
+      <div id = "useChart" ></div>
     </div>
   </div>
 </body>
