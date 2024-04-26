@@ -256,6 +256,7 @@ function record(thisclass) {
 }
 
 function disableAllRecordButtons() {
+  console.log("disabling buttons");
   // Disable all "New Data" buttons
   let recordButtons = document.querySelectorAll('[id$="recordButton"]');
   recordButtons.forEach(button => {
@@ -264,6 +265,7 @@ function disableAllRecordButtons() {
 }
 
 function enableAllRecordButtons() {
+  console.log("enabling buttons")
   // Enable all "New Data" buttons
   let recordButtons = document.querySelectorAll('[id$="recordButton"]');
   recordButtons.forEach(button => {
@@ -291,7 +293,6 @@ function callUpdate(thisclass){
  setTimeout(function() {
    if (chartTime > 2000){
      stopChart(thisclass);
-     enableAllRecordButtons(); // Re-enable all "New Data" buttons when the chart is finished
    } else {
      chartTime = chartTime+50;
      updateData(thisclass);
@@ -301,6 +302,7 @@ function callUpdate(thisclass){
 }
 
 function stopChart(thisclass){
+  enableAllRecordButtons(); // Re-enable all "New Data" buttons when the chart is finished
   let base64Image = myChart.toBase64Image();
   let thisdata = datalines;
   let imgId;

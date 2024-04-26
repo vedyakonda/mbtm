@@ -66,21 +66,24 @@ function finishedTraining(){
     openTestMdl();
     openUseMdl();
     collapseTrainMdl();
+    enableAllRecordButtons();
     trained = true;
 }
 
 function repredictData() {
     console.log("Repredicted data!");
     let keyClasses = Object.keys(testingData);
-    for (let i = 0; i < keyClasses.length; i++) {
-        let thisClass = keyClasses[i];
-        let elementKeys = Object.keys(testingData[thisClass]);
-        for (let j = 0; j < elementKeys.length; j++) {
-            let sampleId = elementKeys[j];
-            let data = testingData[thisClass][sampleId].data;
-            let b64 = testingData[thisClass][sampleId].image;
-            storeTestData(thisClass, data, b64, sampleId);
+    if(keyClasses.length<0){
+        for (let i = 0; i < keyClasses.length; i++) {
+            let thisClass = keyClasses[i];
+            let elementKeys = Object.keys(testingData[thisClass]);
+            for (let j = 0; j < elementKeys.length; j++) {
+                let sampleId = elementKeys[j];
+                let data = testingData[thisClass][sampleId].data;
+                let b64 = testingData[thisClass][sampleId].image;
+                storeTestData(thisClass, data, b64, sampleId);
+            }
+            classifySample(keyClasses[i]);
         }
-        classifySample(keyClasses[i]);
     }
 }
