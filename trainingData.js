@@ -1,7 +1,6 @@
-
 let acc, ctx, trainDivy = false, testDivy = false;mbconnected = false;
 let myChart;
-let datalines = { x: [], y: [], z: [] };
+let datalines = {x:[],y:[],z:[]};
 let chartTime;
 let classes = {}; //stores training data
 let testingData = {}; //stores testing data
@@ -11,22 +10,22 @@ let ready2train = false;
 let count = 1;
 let form, file;
 
-function handleSubmit(event) {
+function handleSubmit (event) {
 
-  // Stop the form from reloading the page
-  event.preventDefault();
+ // Stop the form from reloading the page
+ event.preventDefault();
 
-  // If there's no file, do nothing
-  if (!file.value.length) return;
+ // If there's no file, do nothing
+ if (!file.value.length) return;
 
-  // Create a new FileReader() object
-  let reader = new FileReader();
+ // Create a new FileReader() object
+ let reader = new FileReader();
 
-  // Setup the callback event to run when the file is read
-  reader.onload = logFile;
+ // Setup the callback event to run when the file is read
+ reader.onload = logFile;
 
-  // Read the file
-  reader.readAsText(file.files[0]);
+ // Read the file
+ reader.readAsText(file.files[0]);
 
 }
 
@@ -48,7 +47,6 @@ function logFile(event) {
 }
 
 
-
 function displayUp(){
  document.getElementById("myClasses").innerHTML = "";
  let keyClasses =  Object.keys(classes);
@@ -66,49 +64,49 @@ function displayUp(){
 
 }
 
-function showUpload() {
-  document.getElementById("upldButton").classList.add('hideContent');
-  document.getElementById("upldButton").classList.remove('showContent');
-  document.getElementById("upld").classList.remove('hideContent');
-  document.getElementById("upld").classList.add('showContent');
-  form = document.querySelector('#upload');
-  file = document.querySelector('#file');
-  form.addEventListener('submit', handleSubmit);
+function showUpload(){
+ document.getElementById("upldButton").classList.add('hideContent');
+ document.getElementById("upldButton").classList.remove('showContent');
+ document.getElementById("upld").classList.remove('hideContent');
+ document.getElementById("upld").classList.add('showContent');
+ form = document.querySelector('#upload');
+ file = document.querySelector('#file');
+ form.addEventListener('submit', handleSubmit);
 
 }
 
 // download json
-function downloadObjectAsJson() {
-  var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(classes));
-  var downloadAnchorNode = document.createElement('a');
-  downloadAnchorNode.setAttribute("href", dataStr);
-  downloadAnchorNode.setAttribute("download", "mbtm.json");
-  document.body.appendChild(downloadAnchorNode); // required for firefox
-  downloadAnchorNode.click();
-  downloadAnchorNode.remove();
+function downloadObjectAsJson(){
+ var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(classes));
+ var downloadAnchorNode = document.createElement('a');
+ downloadAnchorNode.setAttribute("href",     dataStr);
+ downloadAnchorNode.setAttribute("download", "mbtm.json");
+ document.body.appendChild(downloadAnchorNode); // required for firefox
+ downloadAnchorNode.click();
+ downloadAnchorNode.remove();
 }
 
 // training data
 
-function trainDiv() {
-  let divContent = '<button onclick="newClass()"> ➕ new class</button>';
-  document.getElementById("upldButton").classList.remove('hideContent');
-  document.getElementById("upldButton").classList.add('showContent');
-  openAllData();
-  collapseTestMdl();
-  collapseUseMdl();
-  document.getElementById("addClass").innerHTML = divContent;
-  trainDivy = true;
+ function trainDiv(){
+ let divContent = '<button onclick="newClass()"> ➕ new class</button>';
+ document.getElementById("upldButton").classList.remove('hideContent');
+ document.getElementById("upldButton").classList.add('showContent');
+ openAllData();
+ collapseTestMdl();
+ collapseUseMdl();
+ document.getElementById("addClass").innerHTML = divContent;
+ trainDivy = true;
 }
 
-function nameClass() {
-  let className = prompt("Please enter a name for your new class (no spaces):", "Class" + count);
-  let thisClassMod = className.replace(/\s/g, '');
-  if (classes[thisClassMod]) {
-    return "errorClassName";
-  } else {
-    return thisClassMod;
-  }
+function nameClass(){
+ let className = prompt("Please enter a name for your new class (no spaces):", "Class" + count);
+ let thisClassMod = className.replace(/\s/g, '');
+ if (classes[thisClassMod]){
+   return "errorClassName";   
+ } else {
+   return thisClassMod;
+ }
 }
 
 function newClass() {
@@ -169,7 +167,6 @@ function deleteRecentData(thisclass) {
 
 
 function deleteClass(thisclass) {
-
    // Prompt the user for confirmation before deleting the class
    let confirmation = confirm("Are you sure you want to delete this class?");
    if (confirmation) {
@@ -194,12 +191,12 @@ function deleteClass(thisclass) {
 function record(thisclass) {
   // Disable all "New Data" buttons
   disableAllRecordButtons();
+
   document.getElementById(thisclass + 'chart-wrapper').classList.add('chart-wrapper');
   document.getElementById(thisclass + 'recordDiv').innerHTML = "🔴 recording";
   document.getElementById(thisclass + 'chart-wrapper').innerHTML = '<canvas id="' + thisclass + 'Canvas"></canvas>';
   ctx = document.getElementById(thisclass + 'Canvas').getContext('2d');
   console.log('record called');
-
   let chrlabels = new Array(41);
   chrlabels.fill("");
   datalines.x.push(acc.x / 1024);
@@ -276,18 +273,18 @@ function enableAllRecordButtons() {
 
 // Function to update the data and redraw the chart
 function updateData(thisclass) {
-  // Simulate new data
-  datalines.x.push(acc.x / 1024);
-  datalines.y.push(acc.y / 1024);
-  datalines.z.push(acc.z / 1024);
-  // Update the chart's data
-  myChart.data.datasets[0].data = datalines.x;
-  myChart.data.datasets[1].data = datalines.y;
-  myChart.data.datasets[2].data = datalines.z;
+    // Simulate new data
+   datalines.x.push(acc.x/1024);
+   datalines.y.push(acc.y/1024);
+   datalines.z.push(acc.z/1024);
+    // Update the chart's data
+    myChart.data.datasets[0].data = datalines.x;
+    myChart.data.datasets[1].data = datalines.y;
+    myChart.data.datasets[2].data = datalines.z;
 
-  // Update the chart
-  myChart.update();
-  callUpdate(thisclass);
+    // Update the chart
+    myChart.update();
+    callUpdate(thisclass);
 }
 
 function callUpdate(thisclass){
@@ -310,8 +307,7 @@ function stopChart(thisclass){
   myChart.destroy();
   myChart = null;
   ctx = null;
-
-  datalines = {x:[],y:[],z:[]}; //phillip deleted this 
+  datalines = {x:[],y:[],z:[]};
   document.getElementById(thisclass + 'chart-wrapper').innerHTML = '';
   let rec = "'" + thisclass + "'";
   document.getElementById(thisclass + 'recordDiv').innerHTML = '<button id="' + thisclass + 'recordButton" onClick="record(' + rec + ')">➕ new data</button>';
@@ -329,7 +325,7 @@ function stopChart(thisclass){
     let lastKey = keys[keys.length - 1];
     let num = lastKey.replace(/^el/, '');
     let newNum = parseInt(num) + 1;
-    let sampleId = 'el' + newNum;
+    let sampleId = 'el' + newNum; 
     imgId = thisclass + sampleId;
     showChartImage(base64Image, thisclass, imgId);
     if (testingData[thisclass] != null) {
@@ -339,7 +335,7 @@ function stopChart(thisclass){
     }
   } else {
     let newKey = keys.length + 1;
-    let sampleId = 'el' + newKey;
+    let sampleId = 'el' + newKey; 
     imgId = thisclass + sampleId;
     showChartImage(base64Image, thisclass, imgId);
     if (testingData[thisclass] != null) {
@@ -348,7 +344,6 @@ function stopChart(thisclass){
       storeData(thisclass, thisdata, base64Image, sampleId);
     }
   }
-
  }
 
 function getFeatures(thisdata) {
@@ -369,7 +364,6 @@ function getFeatures(thisdata) {
   return inputs;
 }
 
-
 function storeData(thisclass, thisdata, base64Image, sampleId) {
   let inputs = getFeatures(thisdata);
   let target = { class: thisclass };
@@ -378,26 +372,26 @@ function storeData(thisclass, thisdata, base64Image, sampleId) {
 }
 
 
-function shouldTrain() {
-  if (!ready2train) {
-    let modelClasses = Object.keys(classes);
-    let readyArr = [];
+function shouldTrain (){
+  if (!ready2train){
+     let modelClasses =  Object.keys(classes);
+     let readyArr = [];
 
-    if (modelClasses.length >= 2) {
-      for (let i = 0; i < modelClasses.length; i++) {
-        let elementKeys = Object.keys(classes[modelClasses[i]]);
-        readyArr.push(elementKeys.length);
-      }
-      let allGreaterThanThree = readyArr.every(function (element) {
-        return element > 3;
-      });
-
-      if (allGreaterThanThree) {
-        trainDwld();
-      } else {
-        doNotTrain();
-      }
-    } else {
+     if (modelClasses.length >= 2){
+         for (let i = 0; i < modelClasses.length; i++){
+             let elementKeys = Object.keys(classes[modelClasses[i]]);
+             readyArr.push(elementKeys.length);
+         }
+         let allGreaterThanThree = readyArr.every(function(element) {
+             return element > 3;
+         });
+   
+         if (allGreaterThanThree){
+           trainDwld();
+         }else{
+           doNotTrain();
+         }
+     }else{
       doNotTrain();
      }
   }
@@ -405,7 +399,6 @@ function shouldTrain() {
    
 function doNotTrain(){
   document.getElementById("trainButtonDiv").innerHTML = ''; // Remove the "Train Model" button
-
 }
 
 
@@ -421,21 +414,21 @@ function trainDwld() {
 
 
 function calculatePeaks(array) {
-  var peaks = [];
-
-  for (var i = 1; i < array.length - 1; i++) {
-    var currentValue = array[i];
-    var prevValue = array[i - 1];
-    var nextValue = array[i + 1];
-
-    if (currentValue > prevValue && currentValue > nextValue) {
-      peaks.push(currentValue);
-    }
-  }
-  //return the number of peaks 
-  return peaks.length;
+   var peaks = [];
+ 
+   for (var i = 1; i < array.length - 1; i++) {
+     var currentValue = array[i];
+     var prevValue = array[i - 1];
+     var nextValue = array[i + 1];
+ 
+     if (currentValue > prevValue && currentValue > nextValue) {
+       peaks.push(currentValue);
+     }
+   }
+   //return the number of peaks 
+   return peaks.length;
 }
-
+ 
 
 function showChartImage(b64, thisclass, imgId) {
 
@@ -465,7 +458,6 @@ function deleteDataPoint(thisclass, imgId) {
 
     // update UI
     let dataElement = document.getElementById(imgId+'_div');
-
     dataElement.parentNode.removeChild(dataElement);
     ready2train = false;
     shouldTrain();
@@ -473,26 +465,26 @@ function deleteDataPoint(thisclass, imgId) {
 }
 
 
-function disconnect() {
-  alert("microBit disconnected! Please pair your microBit again!");
-  document.getElementById('connectMicro').innerHTML = '<button id="searchButton" onClick="searchDevice()"> Pair your microBit</button>'
-  openConnect();
+function disconnect (){
+ alert("microBit disconnected! Please pair your microBit again!");
+ document.getElementById('connectMicro').innerHTML = '<button id="searchButton" onClick="searchDevice()"> Pair your microBit</button>'
+ openConnect();
 }
 
 
 // Start the microBit
-microBit = new uBitWebBluetooth();
+microBit=new uBitWebBluetooth();
 plotReady = false;
-console.log("mbit", microBit);
-microBit.onConnect(function () {
+console.log("mbit",microBit);
+microBit.onConnect(function(){
   console.log("connected");
 
-  document.getElementById("connected").innerHTML = "true";
+  document.getElementById("connected").innerHTML="true";
   document.getElementById("properties").classList.toggle('inactive');
 
 });
 
-microBit.onDisconnect(function () {
+microBit.onDisconnect(function(){
   mbconnected = false;
   console.log("disconnected");
   alert("microBit disconnected! Please pair your microBit again!");
@@ -503,7 +495,7 @@ microBit.onDisconnect(function () {
   collapseTestDISC();
 });
 
-function searchDevice() {
+function searchDevice(){
   microBit.searchDevice();
 }
 
