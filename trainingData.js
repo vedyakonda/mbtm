@@ -55,6 +55,7 @@ function displayUp(){
    let thisClass = keyClasses[i];
    let elementKeys = Object.keys(classes[keyClasses[i]]);
    for (let j = 0; j < elementKeys.length; j++){
+      let imgId = thisClass + elementKeys[j];
      let b64 = classes[keyClasses[i]][elementKeys[j]].image;
     
      showChartImage(b64, thisClass, imgId);
@@ -256,6 +257,7 @@ function record(thisclass) {
 }
 
 function disableAllRecordButtons() {
+  console.log("disabling buttons");
   // Disable all "New Data" buttons
   let recordButtons = document.querySelectorAll('[id$="recordButton"]');
   recordButtons.forEach(button => {
@@ -264,6 +266,7 @@ function disableAllRecordButtons() {
 }
 
 function enableAllRecordButtons() {
+  console.log("enabling buttons")
   // Enable all "New Data" buttons
   let recordButtons = document.querySelectorAll('[id$="recordButton"]');
   recordButtons.forEach(button => {
@@ -291,7 +294,6 @@ function callUpdate(thisclass){
  setTimeout(function() {
    if (chartTime > 2000){
      stopChart(thisclass);
-     enableAllRecordButtons(); // Re-enable all "New Data" buttons when the chart is finished
    } else {
      chartTime = chartTime+50;
      updateData(thisclass);
@@ -301,13 +303,14 @@ function callUpdate(thisclass){
 }
 
 function stopChart(thisclass){
+  enableAllRecordButtons(); // Re-enable all "New Data" buttons when the chart is finished
   let base64Image = myChart.toBase64Image();
   let thisdata = datalines;
   let imgId;
   myChart.destroy();
   myChart = null;
   ctx = null;
-  datalines = {x:[],y:[],z:[]}; //phillip deleted this 
+  datalines = {x:[],y:[],z:[]};
   document.getElementById(thisclass + 'chart-wrapper').innerHTML = '';
   let rec = "'" + thisclass + "'";
   document.getElementById(thisclass + 'recordDiv').innerHTML = '<button id="' + thisclass + 'recordButton" onClick="record(' + rec + ')">➕ new data</button>';
@@ -438,7 +441,7 @@ function showChartImage(b64, thisclass, imgId) {
   div.id = imgId + '_div'; //add id to the div
   div.setAttribute('style', 'position: relative; display: inline-block;');
   let inner = '<img src="' + b64 + '" id="' + imgId + '_img" style=" height:125px;" </img>' +
-    '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick="deleteDataPoint("'+thisclass+'","' + imgId + '")">❌</button>'
+    '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick=deleteDataPoint("'+thisclass+'","' + imgId + '")>❌</button>'
   if (testingData[thisclass] != null) {
     inner = '<div id="' + imgId + '_pred"></div>' + inner;
   }
@@ -454,7 +457,6 @@ function deleteDataPoint(thisclass, imgId) {
       delete classes[thisclass][sampleId];
     } else {
       delete testingData[thisclass][sampleId];
-      calculateAccuracy(thisclass);
     }
 
     // update UI

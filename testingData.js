@@ -23,22 +23,20 @@ async function storeTestData(thisclass, thisdata, base64Image, sampleId) {
             thisprediction = -1;
             predIcon = '😡';
         }
+        
+        testingData[thisclass][sampleId] = { data: thisdata, image: base64Image, m: [target, inputs], prediction: thisprediction };  
 
         if (!(thisclass in testingAccuracy)) {
             console.log("Add new")
-            testingAccuracy[thisclass] = 0
-            prevTotal = -1;
+            testingAccuracy[thisclass] = 0;
         }
 
-        testingData[thisclass][sampleId] = { data: thisdata, image: base64Image, m: [target, inputs], prediction: thisprediction };
-        document.getElementById(thisclass + 'Accuracy').innerHTML = testingAccuracy[thisclass];    
+        calculateAccuracy(thisclass); 
     } else {
         testingData[thisclass][sampleId] = { data: thisdata, image: base64Image, m: [target, inputs]};
         document.getElementById(thisclass + 'Accuracy').innerHTML = 'train a model to calculate accuracy';    
     }
-    
-    calculateAccuracy(thisclass);
-    console.log("Test Accuracy: ", testingAccuracy[thisclass])
+    console.log("Test Accuracy: ", testingAccuracy[thisclass]);
 
     datalines = { x: [], y: [], z: [] };
     document.getElementById(thisclass + sampleId + '_pred').innerHTML = predIcon;
@@ -72,4 +70,5 @@ function calculateAccuracy(thisclass) {
     }
 
     testingAccuracy[thisclass] = (sum / elementKeys.length).toFixed(2);
+    document.getElementById(thisclass + 'Accuracy').innerHTML = testingAccuracy[thisclass]; 
 }
