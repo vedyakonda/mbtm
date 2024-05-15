@@ -1,4 +1,4 @@
-let acc, ctx, trainDivy = false, testDivy = false;mbconnected = false;
+let acc, ctx, trainDivy = false, testDivy = false; mbconnected = false;
 let myChart;
 let datalines = {x:[],y:[],z:[]};
 let chartTime;
@@ -32,10 +32,11 @@ function handleSubmit (event) {
 function logFile(event) {
   let str = event.target.result;
   classes = JSON.parse(str);
-  let keyClasses = Object.keys(classes);
-  for (let i = 0; i < keyClasses.length; i++) {
-    testclass = keyClasses[i] + "Test";
-    testingData[testclass] = {}
+  let testClasses = Object.keys(testingData);
+  for (let i = 0; i < testClasses.length; i++) {
+    delete testingData[testClasses[i]];
+    let classDivTest = document.getElementById(testClasses[i]);
+    classDivTest.parentNode.removeChild(classDivTest);
   }
 
   //  testingData = JSON.parse(str);
@@ -53,9 +54,13 @@ function displayUp(){
  for (let i = 0; i < keyClasses.length; i++){
    createClassDiv(keyClasses[i]);
    let thisClass = keyClasses[i];
+
+   let testClass = thisClass + 'Test';
+   testingData[testClass] = {};
+
    let elementKeys = Object.keys(classes[keyClasses[i]]);
    for (let j = 0; j < elementKeys.length; j++){
-      let imgId = thisClass + elementKeys[j];
+    let imgId = thisClass + elementKeys[j];
      let b64 = classes[keyClasses[i]][elementKeys[j]].image;
     
      showChartImage(b64, thisClass, imgId);
