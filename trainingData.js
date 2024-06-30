@@ -134,7 +134,7 @@ function createClassDiv(thisClassMod) {
   let node = document.createElement("div");
   node.id = thisClassMod;
   let rec = "'" + thisClassMod + "'";
-  node.innerHTML = '<div><h3 style="display: inline-block;">' + thisClassMod + '</h3><button style="display: inline-block;" class="deleteClassButton" onclick="deleteClass(' + rec + ')">❌</button></div><div id="' + thisClassMod + 'recordDiv"><button id="' + thisClassMod + 'recordButton" onClick="record(' + rec + ')">➕ new data</button></div><div id="' + thisClassMod + 'chart-wrapper"></div><div id="' + thisClassMod + 'Data"></div>';
+  node.innerHTML = '<div><h3 style="display: inline-block;">' + thisClassMod + '</h3><button style="display: inline-block;" class="deleteClassButton" onclick="deleteClass(' + rec + ')">🗑️</button></div><div id="' + thisClassMod + 'recordDiv"><button id="' + thisClassMod + 'recordButton" onClick="record(' + rec + ')">➕ new data</button></div><div id="' + thisClassMod + 'chart-wrapper"></div><div id="' + thisClassMod + 'Data"></div>';
   document.getElementById("myClasses").appendChild(node);
   //testing classes
   let testnode = document.createElement("div");
@@ -446,7 +446,7 @@ function showChartImage(b64, thisclass, imgId) {
   div.id = imgId + '_div'; //add id to the div
   div.setAttribute('style', 'position: relative; display: inline-block;');
   let inner = '<img src="' + b64 + '" id="' + imgId + '_img" style=" height:125px;" </img>' +
-    '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick=deleteDataPoint("'+thisclass+'","' + imgId + '")>❌</button>'
+    '<button class ="deleteButton" style="position: absolute; top: 0; right: -10;" onClick=deleteDataPoint("'+thisclass+'","' + imgId + '")>🗑️</button>'
   if (testingData[thisclass] != null) {
     inner = '<div id="' + imgId + '_pred"></div>' + inner;
   }

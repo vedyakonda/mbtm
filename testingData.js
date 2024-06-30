@@ -18,10 +18,10 @@ async function storeTestData(thisclass, thisdata, base64Image, sampleId) {
         let testclass = thisclass.substring(0, thisclass.length - 4);
         if (thisprediction === testclass) {
             thisprediction = 1;
-            predIcon = '🤩';
+            predIcon = '✅';
         } else {
             thisprediction = -1;
-            predIcon = '😡';
+            predIcon = '❌';
         }
         
         testingData[thisclass][sampleId] = { data: thisdata, image: base64Image, m: [target, inputs], prediction: thisprediction };  
