@@ -2,6 +2,7 @@ let rawTestData = {x:[],y:[],z:[]};
 let dataStream = false, resultTestChart = false, resultUseChart = false, testChart, useChart, cux, cvx, modeUse = false, modeTest = false;
 //let confidenceData = {};
 let prevLabel = "";
+let maxLabel = "";
 
 function useModel(){
     getRawData();
@@ -71,15 +72,15 @@ function getRawData() {
                 rawTestData.x.push(acc.x/1024);
                 rawTestData.y.push(acc.y/1024);
                 rawTestData.z.push(acc.z/1024);
-                liveClassify();
+                liveClassify(rawTestData);
             } 
             getRawData();
         }
     }, 50);
 }
 
-function liveClassify(){
-    let input = getFeatures(rawTestData);
+function liveClassify(testData){
+    let input = getFeatures(testData);
     thisModel.classify(input, gotResult);
 }
 
@@ -88,14 +89,14 @@ function gotResult(error, results) {
         console.error(error);
         return;
     } else {
-        console.log(results);
+        //console.log(results);
         let hasInvalidConfidence = results.some(result => isNaN(result.confidence) || result.confidence === null);// Check if the confidence of any class is NaN or null
 
         if (hasInvalidConfidence) {
             let confirmation = window.confirm("Some classes have invalid confidence values and can be fixed by diversifying your data. Either create a new class or increase the diversity in your existing classes.");
 
             if (confirmation) {
-                console.log("hello")
+                //console.log("hello")
                 testDataStreamOff();
                 useDataStreamOff();
             }
@@ -131,8 +132,8 @@ function updateTestChart(results){
         }}}
         testChart.data.datasets[0].data = dta;
         testChart.update();
+        //sendtoMB(results[0].label);
     }
-
 }
 
 
@@ -152,6 +153,8 @@ function updateUseChart(results){
         sendtoMB(results[0].label);
     }
 }
+
+
 
 
 function createTestChart(results){
@@ -206,7 +209,6 @@ function createTestChart(results){
         });
         resultTestChart = true;
 }
-
 
 function createUseChart(results){
     cvx = document.getElementById('useConfidence').getContext('2d');
@@ -266,11 +268,13 @@ function createUseChart(results){
         resultUseChart = true;
 }
 
+
+
 function sendtoMB(label){
-    if (prevLabel!=label) {
+    microBit.writeUARTData(label); 
+    /*if (prevLabel!=label) {
         prevLabel=label;
         microBit.writeUARTData(prevLabel);    
         // console.log(prevLabel);
-    }
+    }*/
 }
-
